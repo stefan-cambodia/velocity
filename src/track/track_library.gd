@@ -6,7 +6,7 @@ static var _cache: Dictionary = {}
 
 
 static func ids() -> PackedStringArray:
-	return PackedStringArray(["helix_bay", "glacier_ring", "atacama_spaceport", "proving_ground"])
+	return PackedStringArray(["helix_bay", "glacier_ring", "atacama_spaceport", "lagrange_station", "proving_ground"])
 
 
 static func spec(id: String) -> Dictionary:
@@ -19,6 +19,8 @@ static func spec(id: String) -> Dictionary:
 			return _glacier_ring()
 		"atacama_spaceport":
 			return _atacama()
+		"lagrange_station":
+			return _lagrange()
 	push_error("unknown track " + id)
 	return {}
 
@@ -207,5 +209,46 @@ static func _atacama() -> Dictionary:
 			{"seg": 3, "at": 0.3, "d": 5.0, "kind": "weapon", "length": 8.0},
 			{"seg": 11, "at": 0.45, "d": -6.0, "kind": "weapon", "length": 8.0},
 			{"seg": 16, "at": 0.7, "d": 6.0, "kind": "weapon", "length": 8.0},
+		],
+	}
+
+
+## LAGRANGE STATION: a racing circuit built through an orbital station above
+## a living planet. The Corkscrew rolls the track through 360 degrees (the
+## flux lock holds the ship upside down), the Hub Spiral circles the station
+## core, the Habitat Ring runs inside the rotating torus and the Docking Bay
+## chicane threads the hangar. See docs/TRACK_LAGRANGE_STATION.md.
+static func _lagrange() -> Dictionary:
+	return {
+		"name": "Lagrange Station",
+		"start": Vector3(0, 60, 0),
+		"heading": 0.0,
+		"width": 30.0,
+		"segments": [
+			{"len": 350, "tags": ["start", "recharge"], "name": "Concourse"},
+			{"len": 600, "turn": 90, "bank": 14, "name": "Array Sweep"},
+			{"len": 600, "rise": 20, "name": "Truss Run"},
+			{"len": 420, "roll": 360, "width": 28, "name": "The Corkscrew"},
+			{"len": 300, "turn": 90, "rise": -20, "bank": 12, "name": "Hub Dive"},
+			{"len": 500, "rise": -20},
+			{"len": 1050, "turn": 360, "rise": -30, "bank": 20, "ease": 0.15, "name": "Hub Spiral"},
+			{"len": 500, "turn": 90, "tags": ["tunnel"], "ceiling": 11.0, "width": 26, "name": "Habitat Ring"},
+			{"len": 220, "turn": -45, "bank": -10, "name": "Antenna Esses"},
+			{"len": 220, "turn": 45, "bank": 10},
+			{"len": 500, "rise": 20, "name": "Dock Approach", "flex": true},
+			{"len": 170, "turn": -60, "bank": -8, "ease": 0.35, "width": 26, "tags": ["tunnel"], "ceiling": 22.0, "name": "Docking Bay"},
+			{"len": 170, "turn": 60, "bank": 8, "ease": 0.35, "width": 26, "tags": ["tunnel"], "ceiling": 22.0},
+			{"len": 560, "turn": 90, "rise": 30, "bank": 12, "name": "Return Sweep"},
+			{"len": 300, "tags": ["start"], "name": "Grid Straight", "flex": true},
+		],
+		"pads": [
+			{"seg": 2, "at": 0.3, "d": 0.0, "kind": "boost"},
+			{"seg": 10, "at": 0.4, "d": -6.0, "kind": "boost"},
+			{"seg": 5, "at": 0.5, "d": 7.0, "kind": "boost"},
+			{"seg": 0, "at": 0.6, "d": -7.0, "kind": "weapon", "length": 8.0},
+			{"seg": 0, "at": 0.6, "d": 7.0, "kind": "weapon", "length": 8.0},
+			{"seg": 5, "at": 0.2, "d": -6.0, "kind": "weapon", "length": 8.0},
+			{"seg": 8, "at": 0.5, "d": -4.0, "kind": "weapon", "length": 8.0},
+			{"seg": 13, "at": 0.6, "d": 6.0, "kind": "weapon", "length": 8.0},
 		],
 	}

@@ -8,6 +8,14 @@ extends RefCounted
 
 const G := Vector3(0.0, -9.81, 0.0)
 
+
+## Share of world gravity that acts along a locked surface whose normal has
+## world-up component `ny`. Full on ordinary banks and slopes; fades out once
+## the deck rolls past ~55 degrees, where the flux lock alone holds the ship
+## (corkscrews), so the pull never swings sideways as the deck turns over.
+static func planar_fade(ny: float) -> float:
+	return smoothstep(0.2, 0.6, ny)
+
 var spec: ShipSpec
 var track: TrackData
 
@@ -18,6 +26,8 @@ var fwd := Vector3.FORWARD
 var up := Vector3.UP
 var yaw_rate: float = 0.0
 var locked: bool = true
+var _roll_w: float = 0.0               ## Roll rate of the deck under a locked ship (rad/s).
+var _roll_carry := Vector3.ZERO        ## Sideways sweep of the hover gap on a rolling deck (m/s).
 var energy: float = 100.0
 var boost_t: float = 0.0
 var hint: int = -1
@@ -145,8 +155,32 @@ func step(dt: float, c: ShipControls) -> void:
 		var a_spring := spec.hover_k * (spec.hover_h - h_c) - spec.hover_c * v_n
 		a_spring = maxf(a_spring, -spec.pull_max)
 		acc += n * (a_spring - spec.g_track)
-		acc += (G - n * G.dot(n)) * spec.planar_g
+		acc += (G - n * G.dot(n)) * (spec.planar_g * planar_fade(n.y))
+		# Co-rotating lock. Where the deck rolls about its centre line at w rad/m
+		# (corkscrews), the deck point at offset d rides a helix round that line.
+		# In plain world space nothing supplies its centripetal pull (w²·v²·d,
+		# about 18 m/s² at the barrier of a 420 m roll), so the ship would be
+		# flung outward, and the hull would trail the deck by ~10 degrees. So
+		# the lock turns the velocity, nose and hull with the deck each step
+		# (_roll_w, applied below). That supplies the centripetal terms exactly
+		# and keeps the heading relative to the deck. What a pure rotation
+		# cannot supply is the normal pull as the roll rate changes, -w'·v²·d,
+		# and the swing of the hover gap h. The gap's sideways sweep (w·h·v) is
+		# geometry, not motion the keels should resist, so it moves the position
+		# (_roll_carry), not the velocity where grip would read it as slip. On
+		# ordinary bank changes all of this is negligible. A twist drives like a
+		# straight.
+		var w0 := _roll_rate(hit.i)
+		var w1 := _roll_rate(hit.i + 1)
+		var w := lerpf(w0, w1, hit.t)
+		var dw := (w1 - w0) / track.step
+		var vs := vel.dot(hit.T)
+		acc += hit.N * (vs * vs * (-dw * hit.d - w * w * hit.h))
+		_roll_w = w * vs
+		_roll_carry = hit.B * (w * hit.h * vs)
 	else:
+		_roll_w = 0.0
+		_roll_carry = Vector3.ZERO
 		acc += G * (spec.g_air / 9.81)
 	var vf := vel.dot(fwd)
 	var top := spec.v_top * (spec.boost_top if boost_t > 0.0 else 1.0)
@@ -166,6 +200,17 @@ func step(dt: float, c: ShipControls) -> void:
 		a_f -= vf * spec.reverse_damp
 	acc += fwd * a_f
 	vel += acc * dt
+	if _roll_w != 0.0:
+		# Rigid turn with the deck, before the yaw and grip stages read the
+		# planar velocity. The surface normal of this step turns too, so grip
+		# measures slip in the frame the velocity and nose now sit in.
+		var ax := hit.T.normalized()
+		var phi := _roll_w * dt
+		vel = vel.rotated(ax, phi)
+		fwd = fwd.rotated(ax, phi)
+		up = up.rotated(ax, phi)
+		n = n.rotated(ax, phi)
+		surf_n = n
 
 	# 3. Yaw: the nose turns at a rate that follows the steering, with inertia.
 	var n_ref := n if locked else up
@@ -204,7 +249,7 @@ func step(dt: float, c: ShipControls) -> void:
 	fwd = (fwd - up * fwd.dot(up)).normalized()
 
 	# 6. Move, then resolve contact with the floor, barriers and islands.
-	pos += vel * dt
+	pos += (vel + _roll_carry) * dt
 	_constrain(dt)
 
 	# 7. Pads, energy, telemetry.
@@ -223,6 +268,14 @@ func step(dt: float, c: ShipControls) -> void:
 	if locked and on_span and absf(hit.d) < minf(hit.half_l, hit.half_r) - 2.0 and fwd.dot(hit.T) > 0.5:
 		last_safe_s = hit.s
 		last_safe_d = hit.d
+
+
+## Roll rate of the deck frame about the centre line at sample i (rad/m,
+## positive turns N toward B).
+func _roll_rate(i: int) -> float:
+	var a := track.wrap_i(i)
+	var b := track.wrap_i(i + 1)
+	return -(track.rgt[b] - track.rgt[a]).dot(track.nrm[a]) / track.step
 
 
 ## Fits a plane through the surface points under four probes at the hull

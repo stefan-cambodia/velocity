@@ -55,6 +55,44 @@ World build 1.3 s (terrain heightfield 0.7 s); ready to race 8.4 s.
 
 World build 1.5 s; ready to race 11.3 s on the first run after install (shader compilation).
 
+### Lagrange Station (same phone, 2 laps, High), 2026-11-13
+
+First build: lap 1 mean 58.5 fps, lap 2 59.2, lows 49–51 every lap in the Hub Spiral. The dips
+did not follow draw calls or primitives: 51 fps at 172 draws and 155k primitives, 60 fps at 208
+draws and 279k. Adaptive resolution fell to 0.76, so the cost was per pixel. The suspect was the
+sky shader's analytic planet: about 19 value-noise evaluations per planet pixel, and the banked
+spiral shows the most planet. The surface fields were then **baked into one texture of the visible
+cap** (`gen_textures.py gen_planet`, 2048², VRAM-compressed, mipmapped), so lighting is the only
+per-pixel work left.
+
+| Metric | Lap 1 | Lap 2 |
+|--------|-------|-------|
+| Mean fps (60 cap) | 59.9 (was 58.5) | **60.0** (was 59.2) |
+| Lowest 1 s sample | 58 (was 49) | **60** (was 51) |
+| Hub Spiral mean / lowest | 60.0 / 60 (was 55.4 / 49) | 60.0 / 60 (was 57.1 / 51) |
+| Adaptive render scale | 0.90, the preset value (was down to 0.76) | 0.90 |
+| Draw calls | median 178, max 227 | |
+
+World build 1.4 s (orbital world 0.74 s); ready to race 9.0 s.
+
+### Texture mipmaps (all circuits), 2026-11-13
+
+Every 3D shader samples its textures with mipmap filtering (anisotropic on the track and
+barriers), but every texture had been imported **without mipmaps**. Godot only switches a texture
+to 3D import settings when the editor sees it on a 3D material, and these materials are built in
+code. So the deck lattice aliased at distance, the facade windows never averaged with distance as
+the building shader intends, and texture-cache use was poor. `track_*`, `panel_*` and `windows`
+now import with mipmaps. Helix Bay, the heaviest circuit, re-measured on the same phone:
+
+| Metric | Lap 1 | Lap 2 |
+|--------|-------|-------|
+| Mean fps | 59.9 (was 58.9) | **60.0** (was 59.0) |
+| Lowest 1 s sample | 57 (was 44) | **59** (was 51) |
+| Samples below 57 | 0 (was 10 of 86) | 0 (was 13 of 84) |
+
+Battery 36.4 °C after three back-to-back runs (about 10 minutes of racing). This is still not a
+thermal soak test.
+
 Not measured yet: 90/120 Hz caps, Low/Medium/Ultra presets on device, a
 sustained thermal run (5+ races), battery drain rate, memory footprint, other devices and aspect ratios.
 
@@ -64,7 +102,11 @@ sustained thermal run (5+ races), battery drain rate, memory footprint, other de
   substep). The 8-ship race simulates at 120 Hz without visible CPU cost on the A56.
 - The track is chunked into about 96 m meshes (frustum culled), each carrying three shared materials.
 - The city is merged into 450 m cell meshes with visibility ranges. Buildings use one facade shader
-  with procedural windows (no textures) that fade to their average with distance.
+  whose windows come from one texture lookup. Its mipmaps fade far windows to their average.
+- Textures sampled in 3D must be imported with mipmaps. Godot's automatic 3D detection does not
+  fire for materials built in code, so this is set explicitly in each `.import` file.
+- Expensive per-pixel noise is baked: the Lagrange planet surface is one texture fetch, not 19 noise
+  evaluations.
 - Particles: streaks (90 × preset factor), pooled spark emitters.
 - Audio: 4 positional engine voices for the nearest opponents. Only the player's engine is layered
   (3 loops).

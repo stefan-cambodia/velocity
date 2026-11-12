@@ -295,3 +295,69 @@ func test_respawn_returns_to_last_safe_point() -> void:
 	near(ph.hit.h, ph.spec.hover_h, 0.05, "on the surface")
 	ok(ph.locked and ph.vel.length() < 0.01, "locked and at rest")
 	ok(absf(ph.hit.d) <= 4.0, "near the centre")
+
+
+func test_barrel_roll_holds_the_ship_upside_down() -> void:
+	# A 360-degree roll over 500 m on a straight: the ship must stay locked to
+	# the surface through the inverted part, at speed and at low speed.
+	var td := TrackBuilder.build({"start": Vector3.ZERO, "width": 30.0, "segments": [
+		{"len": 800}, {"len": 500, "roll": 360, "ease": 0.0}, {"len": 800},
+		{"len": 1500, "turn": 180}, {"len": 2100, "flex": true}, {"len": 1500, "turn": 180}, {"len": 10, "flex": true}]})
+	# Frames are continuous through the roll (no flipped sample).
+	var worst := 0.0
+	for i in td.count:
+		worst = maxf(worst, td.nrm[i].angle_to(td.nrm[(i + 1) % td.count]))
+	ok(worst < deg_to_rad(2.0), "normal turns at most %.2f deg per metre" % rad_to_deg(worst))
+	var mid := TrackData.Hit.new()
+	td.frame_at(800.0 + 250.0, mid)
+	ok(mid.N.y < -0.95, "upside down in the middle of the roll (N.y %.2f)" % mid.N.y)
+	for v0: float in [30.0, 88.0]:
+		var ph := _ship(td, 600.0)
+		ph.vel = ph.fwd * v0
+		var c := ShipControls.new()
+		c.thrust = 1.0
+		var st := {"unlocked": 0, "lowest": INF, "walls": 0}
+		_run(ph, c, 1500.0 / maxf(v0, 30.0) * 0.6, func(p: ShipPhysics, cc: ShipControls) -> void:
+			_follow(p, cc)
+			if not p.locked: st["unlocked"] += 1
+			st["lowest"] = minf(st["lowest"], p.hit.h)
+			if p.ev_wall > 3.0: st["walls"] += 1)
+		note("roll at %.0f m/s: unlocked steps %d, lowest h %.2f, wall hits %d, now s=%.0f" % [v0, st["unlocked"], st["lowest"], st["walls"], ph.hit.s])
+		ok(ph.hit.s > 1300.0, "made it through the roll at %.0f m/s" % v0)
+		eq(st["unlocked"], 0, "stays locked at %.0f m/s" % v0)
+		ok(float(st["lowest"]) >= ph.spec.min_clear - 0.01, "no surface contact")
+
+
+func test_corkscrew_keeps_an_off_centre_line_hands_off() -> void:
+	# Ships off the centre line, no steering, through a 360-degree roll over
+	# 420 m. Plain world-space physics would fling them outward (the deck point
+	# rides a helix needing w²·v²·d of centripetal pull, ~18 m/s² at the
+	# barrier) and the hull would trail the deck. The co-rotating lock must hold
+	# the offset, the hover gap and the heading, at speed and slowly.
+	var td := TrackBuilder.build({"start": Vector3.ZERO, "width": 30.0, "segments": [
+		{"len": 800}, {"len": 420, "roll": 360, "ease": 0.0}, {"len": 800},
+		{"len": 1500, "turn": 180}, {"len": 2020, "flex": true}, {"len": 1500, "turn": 180}, {"len": 10, "flex": true}]})
+	for v0: float in [40.0, 88.0]:
+		for d0: float in [-11.0, 8.0]:
+			var ph := _ship(td, 700.0, d0)
+			ph.vel = ph.fwd * v0
+			var c := ShipControls.new()
+			c.thrust = 1.0 if v0 > 50.0 else 0.0
+			var st := {"worst": 0.0, "walls": 0, "hmin": 9.0, "hmax": 0.0, "lag": 0.0, "end": 0.0, "later": 0.0}
+			_run(ph, c, 1300.0 / v0 * 1.6, func(p: ShipPhysics, _cc: ShipControls) -> void:
+				if p.hit.s > 760.0 and p.hit.s < 1240.0:
+					st["worst"] = maxf(st["worst"], absf(p.hit.d - d0))
+					st["hmin"] = minf(st["hmin"], p.hit.h)
+					st["hmax"] = maxf(st["hmax"], p.hit.h)
+					st["lag"] = maxf(st["lag"], rad_to_deg(p.up.angle_to(p.surf_n)))
+					st["end"] = p.hit.d
+				if p.hit.s < 1540.0:
+					st["later"] = p.hit.d
+				if p.ev_wall > 0.5 and p.hit.s < 1540.0: st["walls"] += 1)
+			note("roll at %.0f m/s from d=%+.0f hands off: drift %.2f m, h %.2f..%.2f, hull lag %.1f deg, d %+.2f at roll end, %+.2f 300 m on, wall hits %d" % [v0, d0, st["worst"], st["hmin"], st["hmax"], st["lag"], st["end"], st["later"], st["walls"]])
+			ok(ph.hit.s > 1540.0, "made it through at %.0f m/s" % v0)
+			ok(float(st["worst"]) < 2.0, "offset held within 2 m (drifted %.2f)" % st["worst"])
+			ok(absf(float(st["later"]) - float(st["end"])) < 0.5, "leaves the roll pointing straight")
+			ok(float(st["hmin"]) > 0.9 and float(st["hmax"]) < 1.15, "hover gap steady")
+			ok(float(st["lag"]) < 3.0, "hull follows the deck (lag %.1f deg)" % st["lag"])
+			eq(st["walls"], 0, "never touches a barrier")

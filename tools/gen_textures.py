@@ -359,6 +359,77 @@ def gen_windows():
 GENS.append(gen_windows)
 
 
+def _vnoise(x, y, lat):
+    """Value noise at arbitrary coordinates from a wrapped random lattice."""
+    lat = lat.astype(np.float32)
+    L = lat.shape[0]
+    xi = np.floor(x).astype(np.int64)
+    yi = np.floor(y).astype(np.int64)
+    fx = x - xi
+    fy = y - yi
+    fx = fx * fx * (3 - 2 * fx)
+    fy = fy * fy * (3 - 2 * fy)
+    x0, x1, y0, y1 = xi % L, (xi + 1) % L, yi % L, (yi + 1) % L
+    top = lat[y0, x0] + (lat[y0, x1] - lat[y0, x0]) * fx
+    bot = lat[y1, x0] + (lat[y1, x1] - lat[y1, x0]) * fx
+    return top + (bot - top) * fy
+
+
+def _fbm(x, y, lats, freq, octaves, gain=0.5):
+    s = np.zeros_like(x)
+    a = 1.0
+    tot = 0.0
+    for o in range(octaves):
+        f = freq * (2.07 ** o)
+        s += _vnoise(x * f + 17.3 * o, y * f - 9.1 * o, lats[o % len(lats)]) * a
+        tot += a
+        a *= gain
+    return s / tot
+
+
+def gen_planet():
+    """Surface fields of the planet under Lagrange Station, for sky_space.gdshader.
+
+    The texture covers the cap of the sphere that can ever be seen from the
+    station's orbit (half-angle 16 deg; the visible cap is 14.2 deg) in the
+    tangent plane at the nadir: u, v in [0, 1] -> plane coordinates
+    (2u - 1, 2v - 1) * sin(16 deg), in planet radii, i.e. near-radians.
+      R  elevation, sea level at 0.5 (a gradient, so coasts stay crisp when magnified)
+      G  dryness (0 green, 1 desert)
+      B  cloud cover
+      A  city lights (already masked to populated land)
+    """
+    n = 2048
+    rng = np.random.default_rng(2189)
+    lats = [rng.random((256, 256)) for _ in range(8)]
+    S = math.sin(math.radians(16.0))
+    c = (np.arange(n) + 0.5) / n * 2.0 - 1.0
+    x, y = np.meshgrid((c * S).astype(np.float32), (c * S).astype(np.float32))
+    # Continents: warped fbm.
+    wx = _fbm(x, y, lats[3:], 4.0, 3) - 0.5
+    wy = _fbm(x + 5.2, y - 1.3, lats[4:], 4.0, 3) - 0.5
+    h = _fbm(x + wx * 0.22, y + wy * 0.22, lats, 7.0, 7)
+    sea = np.quantile(h, 0.64)                  # about a third land
+    peak = np.quantile(h, 0.99)                 # the top 1 % reaches the snow line
+    R = np.clip(np.where(h >= sea, 0.5 + (h - sea) / (peak - sea) * 0.42, 0.5 + (h - sea) * 2.5), 0.0, 1.0)
+    G = sstep(0.47, 0.6, _fbm(x - 3.0, y + 2.0, lats[1:], 13.0, 4))
+    # Clouds: cumulus fields under a large-scale weather mask, lightly warped.
+    cwx = _fbm(x, y + 9.0, lats[2:], 6.0, 3) - 0.5
+    cwy = _fbm(x - 7.0, y, lats[5:], 6.0, 3) - 0.5
+    cl = _fbm(x + cwx * 0.08, y + cwy * 0.08, lats[6:] + lats[:2], 14.0, 6, 0.55)
+    systems = sstep(0.42, 0.62, _fbm(x + 3.3, y + 8.8, lats[4:], 3.5, 3))
+    cv = cl * (0.75 + 0.35 * systems)
+    B = sstep(np.quantile(cv, 0.68), np.quantile(cv, 0.9), cv)   # about a quarter overcast
+    # City lights: clustered speckle on populated land.
+    pop = sstep(0.52, 0.66, _fbm(x + 1.0, y + 4.0, lats[7:] + lats[:3], 22.0, 3))
+    speck = _vnoise(x * 260.0, y * 260.0, lats[0]) * 0.6 + _vnoise(x * 560.0, y * 560.0, lats[5]) * 0.4
+    A = sstep(0.5, 0.62, speck) * pop * sstep(0.5, 0.56, R) * (1.0 - sstep(0.85, 0.95, R))
+    save("planet_cap.png", np.dstack([R, G, B, A]))
+
+
+GENS.append(gen_planet)
+
+
 if __name__ == "__main__":
     os.makedirs(OUT, exist_ok=True)
     flt = sys.argv[1:]

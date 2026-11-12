@@ -24,19 +24,20 @@ The only third-party assets are the Orbitron and Rajdhani fonts (OFL, `assets/fo
 | Android | Debug APK builds (`build/android/velocity.apk`, 40 MB). **Verified on a Galaxy A56**: install, start, full race to results, audio, auto High preset. After optimisation: 59.0 fps mean on lap 2, lowest 1 s sample 51; one-off shader-compilation hitches on lap 1 (see `docs/PERFORMANCE.md`) |
 | AAB | Debug-signed `build/android/velocity.aab` (40 MB) built via the `Android AAB` Gradle preset. Not uploaded or tested on a device |
 | Game modes | Done: Single Race, Elimination (knockout every 35 s), Combat (points for hits and knockouts), Speed Challenge (medal targets from the circuit's ideal lap), Time Trial, Practice. 3 tests |
-| Career and Championship | Done: 4 career tiers (13 events with objectives and rewards, tiers unlocked by completions) and 2 cups (3 and 4 rounds, mixed formats, points table, standings saved between rounds). Teams and classes unlock with credits. Verified headless: career events booked; a full 3-round cup completed |
-| Second circuit: **Glacier Ring** (Arctic research station, aurora, ice tunnel, 2.2 s jump) | Done: own world builder, 3-lap AI race verified, used in the career (17 events) and 3 cups. See `docs/TRACK_GLACIER_RING.md` |
+| Career and Championship | Done: 4 career tiers (25 events with objectives and rewards, tiers unlocked by completions) and 5 cups (3 and 4 rounds, mixed formats, points table, standings saved between rounds). Teams and classes unlock with credits. Verified headless: career events booked; a full 3-round cup completed |
+| Second circuit: **Glacier Ring** (Arctic research station, aurora, ice tunnel, 2.2 s jump) | Done: own world builder, 3-lap AI race verified, used in the career and cups. See `docs/TRACK_GLACIER_RING.md` |
 | Distinct ship per team | Done: parametric hull (nose, proportions, pod layout, fin style, aerofoil, canards, engine size); 8 different silhouettes (`godot --path . -s tools/preview.gd -- out.png --lineup`). All teams share the same collision size for fairness |
 | Third circuit: **Atacama Spaceport** (daylight desert launch complex, flame-trench jump, assembly hall) | Done: own world builder, 3-lap AI race verified, in the career and a new Solar Cup. See `docs/TRACK_ATACAMA_SPACEPORT.md` |
+| Fourth circuit: **Lagrange Station** (low orbit: planet below, 360° corkscrew, descending spiral round the station core, habitat tube, docking bay) | Done: own world builder and space sky, co-rotating flux lock for rolling decks (new physics, tested), 3-lap AI races verified at two difficulties, 4 career events and a new Orbit Cup. See `docs/TRACK_LAGRANGE_STATION.md` |
 | Team logos | Done: original emblems in the menus and on gate boards |
-| The other 9 circuits the brief asks for | **Not started** (phase 7 of the brief) |
+| The other 8 circuits the brief asks for | **Not started** (phase 7 of the brief) |
 
 ## Running
 
 ```sh
 godot --path .                                   # menus
 godot --path . -- --race=helix_bay [--laps=3]    # straight into a race
-godot --headless --path . -s tests/run_tests.gd  # unit tests (29)
+godot --headless --path . -s tests/run_tests.gd  # unit tests (31)
 tools/dev.sh check|test|bench|map <track>        # compile check, tests, handling bench, track map
 ```
 

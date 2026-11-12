@@ -8,6 +8,8 @@
 ##   bank       peak bank in degrees during the segment, following the curvature
 ##              profile (positive = right side low, i.e. into a right turn)
 ##   bank_base  persistent bank reached by the end of the segment (smoothstep)
+##   roll       degrees of roll added to the persistent bank over the segment
+##              (360 = a full barrel roll; the bank is wrapped afterwards)
 ##   rise       height change in metres (cubic Hermite, continuous slope)
 ##   exit_slope slope (dy/dx) at the end of the segment, 0 by default
 ##   width      full track width reached by the end of the segment
@@ -85,6 +87,8 @@ static func _integrate(spec: Dictionary, turns: PackedFloat32Array, lens: Packed
 		var bank_peak := deg_to_rad(float(sg.get("bank", 0.0)))
 		var bb0 := bank_base
 		var bb1 := deg_to_rad(float(sg.get("bank_base", rad_to_deg(bank_base))))
+		if sg.has("roll"):
+			bb1 = bb0 + deg_to_rad(float(sg["roll"]))
 		var y0 := y
 		var y1: float = y + float(sg.get("rise", 0.0))
 		var m0 := slope
@@ -122,7 +126,8 @@ static func _integrate(spec: Dictionary, turns: PackedFloat32Array, lens: Packed
 		y = y1
 		slope = m1
 		width = w1
-		bank_base = bb1
+		# Keep the persistent bank in -PI..PI (a full roll ends where it began).
+		bank_base = wrapf(bb1, -PI, PI)
 	raw.heading_end = psi
 	return raw
 
@@ -221,7 +226,7 @@ static func build(spec: Dictionary) -> TrackData:
 		var seg_len := maxf(cum[r + 1] - cum[r], 1e-6)
 		var t := clampf((s - cum[r]) / seg_len, 0.0, 1.0)
 		td.pos[i] = raw.p[r].lerp(raw.p[r1], t)
-		td.bank[i] = lerpf(raw.bank[r], raw.bank[r1], t)
+		td.bank[i] = lerp_angle(raw.bank[r], raw.bank[r1], t)
 		td.half_l[i] = lerpf(raw.hl[r], raw.hl[r1], t)
 		td.half_r[i] = lerpf(raw.hr[r], raw.hr[r1], t)
 		var near := r if t < 0.5 else r1

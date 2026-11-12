@@ -97,7 +97,7 @@ static func compute(td: TrackData, spec: ShipSpec, margin: float = 3.0, iteratio
 		var kk := absf(rl.k[i])
 		var j := td.wrap_i(int(i * rl.step_len() / td.step))
 		# Banking helps when the turn goes into the bank.
-		var bank_help := g * sin(td.bank[j]) * signf(rl.k[i]) * spec.planar_g
+		var bank_help := g * sin(td.bank[j]) * signf(rl.k[i]) * spec.planar_g * ShipPhysics.planar_fade(td.nrm[j].y)
 		var a_lat := spec.a_lat * 0.92 + maxf(bank_help, -3.0)
 		var vl := sqrt(maxf(a_lat, 5.0) / maxf(kk, 1e-5))
 		# Crests: stay under the speed that would lift the ship off (unless it is a jump).

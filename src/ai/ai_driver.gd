@@ -75,6 +75,17 @@ func drive(dt: float) -> void:
 	var ff := spd * k_ahead / w_lim
 	var wobble := (sin(_noise_t * 1.7) * 0.6 + sin(_noise_t * 4.3) * 0.4) * float(style["wobble"])
 	var steer := ff + ang * 2.3 - (ph.yaw_rate - ff * w_lim) * 0.22 + wobble
+	# --- Edge guard: where will the hull be in 0.45 s? Pure pursuit cuts toward a
+	# line that runs along the barrier and can overshoot it by a metre at a steep
+	# crossing angle. Steer off before contact; silent when running parallel.
+	var hw := absf(ph.fwd.dot(ph.hit.B)) * ph.spec.half_len + ph.spec.half_wid + 0.5
+	var d_pred := ph.hit.d + ph.vel.dot(ph.hit.B) * 0.45
+	var over_r := d_pred - (ph.hit.half_r - hw)
+	var over_l := (-ph.hit.half_l + hw) - d_pred
+	if over_r > 0.0:
+		steer -= over_r * 0.3
+	elif over_l > 0.0:
+		steer += over_l * 0.3
 	# --- Speed.
 	var v_t := line.v_min_ahead(s, maxf(spd * 0.6, 20.0)) * pace - float(style["brake_margin"])
 	if _mistake_t > 0.0:

@@ -19,6 +19,7 @@ const TIERS := [
 		{"id": "s3", "title": "Helix Bay Debut", "mode": "race", "track": "helix_bay", "laps": 2, "difficulty": 0, "goal": {"place": 3}, "reward": 500},
 		{"id": "s6", "title": "Runway Sprint", "mode": "race", "track": "atacama_spaceport", "laps": 2, "difficulty": 0, "goal": {"place": 3}, "reward": 500},
 		{"id": "s5", "title": "Ice Shelf Sprint", "mode": "race", "track": "glacier_ring", "laps": 2, "difficulty": 0, "goal": {"place": 3}, "reward": 500},
+		{"id": "s7", "title": "Station Shakedown", "mode": "race", "track": "lagrange_station", "laps": 2, "difficulty": 0, "goal": {"place": 3}, "reward": 500},
 		{"id": "s4", "title": "Last Ship Standing", "mode": "elimination", "track": "helix_bay", "difficulty": 0, "goal": {"place": 3}, "reward": 500},
 	]},
 	{"name": "ARC PRO SERIES", "class": 1, "need": 3, "events": [
@@ -26,6 +27,7 @@ const TIERS := [
 		{"id": "a2", "title": "Harbour Brawl", "mode": "combat", "track": "helix_bay", "laps": 2, "difficulty": 1, "goal": {"place": 3}, "reward": 700},
 		{"id": "a6", "title": "Salar Speed Trial", "mode": "speed", "track": "atacama_spaceport", "laps": 2, "goal": {"medal": 2}, "reward": 800},
 		{"id": "a5", "title": "Aurora Duel", "mode": "combat", "track": "glacier_ring", "laps": 2, "difficulty": 1, "goal": {"place": 2}, "reward": 800},
+		{"id": "a7", "title": "Zero-G Time Attack", "mode": "speed", "track": "lagrange_station", "laps": 2, "goal": {"medal": 2}, "reward": 800},
 		{"id": "a3", "title": "Helix Time Attack", "mode": "speed", "track": "helix_bay", "laps": 3, "goal": {"medal": 2}, "reward": 800},
 		{"id": "a4", "title": "Knockout Night", "mode": "elimination", "track": "proving_ground", "difficulty": 1, "goal": {"place": 2}, "reward": 800},
 	]},
@@ -34,12 +36,14 @@ const TIERS := [
 		{"id": "n2", "title": "Proving Ground Gauntlet", "mode": "combat", "track": "proving_ground", "laps": 3, "difficulty": 2, "goal": {"place": 2}, "reward": 1200},
 		{"id": "n3", "title": "Nova Gold Run", "mode": "speed", "track": "helix_bay", "laps": 2, "goal": {"medal": 3}, "reward": 1500},
 		{"id": "n5", "title": "Launch Day", "mode": "race", "track": "atacama_spaceport", "laps": 3, "difficulty": 1, "goal": {"place": 2}, "reward": 1300},
+		{"id": "n6", "title": "Habitat Knockout", "mode": "elimination", "track": "lagrange_station", "difficulty": 1, "goal": {"place": 2}, "reward": 1400},
 		{"id": "n4", "title": "Crevasse Knockout", "mode": "elimination", "track": "glacier_ring", "difficulty": 2, "goal": {"place": 2}, "reward": 1500},
 	]},
 	{"name": "QUASAR ELITE", "class": 3, "need": 2, "events": [
 		{"id": "q1", "title": "Elite Invitational", "mode": "race", "track": "helix_bay", "laps": 3, "difficulty": 2, "goal": {"place": 1}, "reward": 2500},
 		{"id": "q2", "title": "The Last Lap of Light", "mode": "elimination", "track": "helix_bay", "difficulty": 2, "goal": {"place": 1}, "reward": 2500},
 		{"id": "q4", "title": "Orbit Insertion", "mode": "combat", "track": "atacama_spaceport", "laps": 3, "difficulty": 2, "goal": {"place": 1}, "reward": 2500},
+		{"id": "q5", "title": "Lagrange Grand Prix", "mode": "race", "track": "lagrange_station", "laps": 3, "difficulty": 2, "goal": {"place": 1}, "reward": 2500},
 		{"id": "q3", "title": "Polar Night Record", "mode": "speed", "track": "glacier_ring", "laps": 3, "goal": {"medal": 3}, "reward": 2500},
 	]},
 ]
@@ -60,6 +64,12 @@ const CUPS := [
 		{"track": "atacama_spaceport", "mode": "race", "laps": 3},
 		{"track": "helix_bay", "mode": "combat", "laps": 2},
 		{"track": "atacama_spaceport", "mode": "elimination"},
+	]},
+	{"id": "orbit_cup", "name": "ORBIT CUP", "class": 2, "difficulty": 1, "rounds": [
+		{"track": "lagrange_station", "mode": "race", "laps": 3},
+		{"track": "atacama_spaceport", "mode": "race", "laps": 3},
+		{"track": "lagrange_station", "mode": "combat", "laps": 2},
+		{"track": "glacier_ring", "mode": "elimination"},
 	]},
 	{"id": "iron_cup", "name": "IRON CUP", "class": 2, "difficulty": 2, "rounds": [
 		{"track": "proving_ground", "mode": "combat", "laps": 3},

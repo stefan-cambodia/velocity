@@ -11,7 +11,8 @@ the speed class scaling the base values.
 |-------|--------------|----------------|
 | Surface probes | Four probes at the hull corners (±`probe_len`, ±`probe_wid`) are projected onto the analytic track. A plane fit gives the surface normal under the hull and the hull's height above it. | `probe_len` 2.3, `probe_wid` 1.1 |
 | Flux lock | Below `lock_h` the ship is "locked": a spring-damper holds `hover_h` and gravity points along −N (`g_track`), so banks and steep sections hold the ship. Pull-down on crests saturates at `pull_max`, so going over a crest faster than √((g_track+pull_max)/κ) launches the ship. | `hover_h` 1.05, `hover_k` 420, `hover_c` 34 (ζ≈0.83), `g_track` 16, `pull_max` 24 |
-| Slopes and banks | The component of world gravity in the surface plane accelerates the ship downhill and pulls it into the inside of a banked turn. | `planar_g` 1.0 |
+| Slopes and banks | The component of world gravity in the surface plane accelerates the ship downhill and pulls it into the inside of a banked turn. It fades out on decks rolled past ~55° (`planar_fade`), where the lock alone holds the ship. | `planar_g` 1.0 |
+| Rolling decks | Co-rotating lock: where the deck rolls about its centre line (w rad/m), the velocity, nose, hull up and the step's surface normal are turned rigidly with the deck by w·v·dt. This happens before the yaw and grip stages read the planar velocity. The normal pull as the roll rate changes, v²·(−w′·d − w²·h), is a force. The hover gap's sideways sweep, w·h·v, moves the position, not the velocity, so grip does not read it as slip. A twist drives like a straight. | none: geometry from the track frames |
 | Thrust | a = thrust·A0 − A0·(v/v_top)²·(coast + (1−coast)·thrust). Top speed is v_top at full thrust; with the throttle closed the ship coasts down at ≈coast·A0. | `accel`, `v_top`, `coast` 0.35 |
 | Yaw | The nose turns at a yaw rate that approaches its target with inertia (`yaw_response`). Target = steer × w_lim, where w_lim = min(`yaw_low`, `steer_k`·a_lat/v): steering is grip-limited at speed and rate-limited when slow. | `yaw_response` 7.5, `steer_k` 1.08, `yaw_low` 1.9 |
 | Grip | The velocity turns towards the nose at `align` per second, limited to a_lat/v rad/s. Asking for more yaw than the keels can follow builds slip (drift), and slip costs speed (`scrub`). | `a_lat` 36 m/s² (ARC), `align` 9, `scrub` 0.5 |
@@ -60,6 +61,10 @@ degrees the path turns in 1.5 s at full right lock, and +ab% = the extra turn wi
 wall% = speed kept 0.6 s after a 20° hit at 90 % of top speed; lap = AI lap of the Proving Ground
 (Elite AI driver).
 
+Re-run on 2026-11-13, after the co-rotating lock, the gravity fade and the AI edge guard: every
+handling column is identical for all eight teams. The AI's Proving Ground laps are 0.02–0.10 s
+slower, and its wall hits fell from 0–2 per lap to 0.
+
 QUASAR class: top speeds 936–961 km/h, lateral 5.0–5.2 g at full lock, and the same turn-in time.
 Faster classes are harder because lateral capacity grows with class as (v_top ratio)^0.85, slower
 than speed itself.
@@ -73,6 +78,22 @@ than speed itself.
   (first version) pinned ships to the outside wall of long corners: the banked-oval test had 904
   contact steps. Now it has 0.
 - **Wall damage** was 35 % of the shield for a 20° hit at 80 m/s, and is now 16 %.
+- **Co-rotating lock for rolling decks** (Lagrange Station's Corkscrew). In pure world space, a
+  ship off the centre line of a rolling deck rides a helix that needs w²·v²·d of centripetal pull,
+  about 18 m/s² at the barrier of a 420 m roll at 80 m/s. Nothing supplied it, so the AI hit the
+  outside wall mid-roll every lap. Fixing it took four attempts, each measured with a hands-off
+  probe:
+  1. A centripetal force on its own did almost nothing.
+  2. Adding nose transport left a 6 m sideways drift from the hover gap.
+  3. Rotating the position kinematically gave the damper a phantom 15 m/s normal velocity, because
+     a helicoid's normal tilts by atan(w·d).
+  4. A rigid rotation of velocity and orientation still drifted. Grip rebuilt the velocity from a
+     planar copy taken before the rotation. Moving the rotation ahead of the yaw stage, and turning
+     the step's normal with it, fixed it.
+
+  Result: at most 1 m of drift at 88 m/s and no heading error after the roll
+  (`test_corkscrew_keeps_an_off_centre_line_hands_off`). On ordinary bank changes the effect is
+  negligible: the four existing circuits keep their lap times and wall counts.
 - **Surface alignment** uses normalised interpolation instead of `slerp`. Float32 `slerp` between
   nearly parallel normals raised engine errors 852 times in the jump test.
 

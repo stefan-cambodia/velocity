@@ -132,7 +132,9 @@ for 90/120 Hz displays.
 - **Thrust**: a = thrust·A0 − A0·(v/v_top)²·(0.35 + 0.65·thrust). Top speed is v_top, and coasting
   at speed decelerates at ≈0.35·A0.
 - **Slopes**: the planar component of world gravity accelerates downhill and slows uphill, and on
-  steep banks it pulls inwards.
+  steep banks it pulls inwards. It fades out on decks rolled past ~55°.
+- **Rolling decks**: a co-rotating lock turns the velocity and orientation with the deck's roll, so
+  corkscrews drive like straights (see `docs/HANDLING.md`).
 - **Walls**: analytic barriers at the track edge. The response is restitution, friction speed loss
   proportional to impact speed, a yaw kick away from the wall, energy damage, and sparks. Glancing
   contact slides instead of sticking.
@@ -156,7 +158,9 @@ At load time, `RacingLine` computes a minimum-curvature line by iterative elasti
 space, plus a speed profile: lateral limit, then a backward braking pass, then a forward
 acceleration pass. `AIDriver` produces the same `ShipControls` that a player does: steering from a
 look-ahead pursuit of the line, airbrakes when the yaw demand exceeds steering or the speed exceeds
-the profile, and thrust. Each personality sets line bias, braking margin, overtaking and blocking
+the profile, and thrust. An edge guard predicts the hull's lateral position 0.45 s ahead and steers
+off a barrier before contact. Pure pursuit toward a line that hugs the edge can otherwise overshoot
+it at steep crossing angles. Each personality sets line bias, braking margin, overtaking and blocking
 behaviour, consistency, and weapon use. Difficulty scales the profile margin and the reaction noise.
 There is **no rubber-banding** and no hidden speed boosts.
 

@@ -47,6 +47,22 @@ with tapered crowns and neon rings, slabs with cantilevered upper blocks, twin t
 bridges, round towers with structural fins. Trackside structure is honest engineering: T-pylons
 under the deck, radial cantilever arms carrying the Helix, light gates as portal frames.
 
+## Circuit worlds
+
+Each circuit has its own time of day and light, while track, barrier and gate language stays the
+same everywhere, so the racing surface always reads the same way.
+
+| Circuit | World | Light | Signature |
+|---------|-------|-------|-----------|
+| Helix Bay | Dusk megacity on a bay | Low warm sun, violet sky, haze | The Helix climb, the Spire, the seafront |
+| Glacier Ring | Arctic research station | Polar night, aurora, snowfall | Ice tunnel, crevasse jump |
+| Atacama Spaceport | High-desert launch complex | Full daylight, hard shadows | Rocket and tower, flame-trench jump, assembly hall |
+| Lagrange Station | Racing station in low orbit | Hard white sun, black sky, blue planet-shine from below, no fog | The planet filling the lower view, the 360° Corkscrew, the spiral round the station core, habitat gardens |
+
+In orbit the "lived-in world with depth" pillar comes from the planet (clouds, coasts, night-side
+cities), the moon, the wheel habitat and the station's own structure. Exposed trusses, solar wings
+and lit interiors play the role the skyline plays elsewhere.
+
 ## Vehicle design language
 
 Long low noses, a faceted central fuselage with chine creases, bubble canopies, and twin flux-keel
