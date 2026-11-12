@@ -45,6 +45,16 @@ average), tunnel sweep light limited to High and Ultra.
 
 World build 1.3 s (terrain heightfield 0.7 s); ready to race 8.4 s.
 
+### Atacama Spaceport (same phone, 2 laps, High, daylight with shadows)
+
+| Metric | Lap 1 | Lap 2 |
+|--------|-------|-------|
+| Mean fps | 59.2 | **60.0** |
+| Lowest 1 s sample | 50 (first sight of materials) | 59 |
+| Draw calls | median 161, max 252 | |
+
+World build 1.5 s; ready to race 11.3 s on the first run after install (shader compilation).
+
 Not measured yet: 90/120 Hz caps, Low/Medium/Ultra presets on device, a
 sustained thermal run (5+ races), battery drain rate, memory footprint, other devices and aspect ratios.
 

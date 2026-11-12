@@ -115,3 +115,33 @@ func test_proving_ground_builds() -> void:
 			gaps += 1
 	between(gaps, 38.0, 52.0, "jump gap samples")
 	ok(td.closure_error < 1.0, "closure %.2f" % td.closure_error)
+
+
+## Every circuit in the library: closes, solves to sensible flex lengths and
+## never runs into itself (parts of the lap that are far apart along the lap
+## must be horizontally apart, or stacked with real clearance).
+func test_library_circuits_are_well_formed() -> void:
+	for id: String in TrackLibrary.ids():
+		var td := TrackLibrary.get_track(id)
+		ok(td.closure_error < 1.0, "%s closure %.2f m" % [id, td.closure_error])
+		for fl in td.flex_lengths:
+			ok(float(fl) > 30.0, "%s flex straight %.0f m" % [id, float(fl)])
+		var worst := INF
+		var at := Vector2.ZERO
+		var stride := 8
+		for i in range(0, td.count, stride):
+			for j in range(i + stride, td.count, stride):
+				var sep := minf(float(j - i), float(td.count - (j - i))) * td.step
+				if sep < 400.0:
+					continue
+				var a := td.pos[i]
+				var b := td.pos[j]
+				if absf(a.y - b.y) > 12.0:
+					continue   # an over/under pass with clearance
+				var d := Vector2(a.x - b.x, a.z - b.z).length()
+				if d < worst:
+					worst = d
+					at = Vector2(i * td.step, j * td.step)
+		note("%s: %.0f m, min same-level separation %.0f m (s=%.0f/%.0f)" % [id, td.length, worst, at.x, at.y])
+		# Two half-widths (~15 m each) plus a margin.
+		ok(worst > 45.0, "%s: parts of the lap %.0f m apart at s=%.0f / %.0f" % [id, worst, at.x, at.y])

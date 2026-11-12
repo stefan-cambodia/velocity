@@ -47,7 +47,25 @@ func _ready() -> void:
 			for v in a.substr(10).split(","):
 				shot_at.append(float(v))
 	_next_shot = every if every > 0.0 else INF
+	if DevArgs.has("--probe-terrain"):
+		_probe_terrain.call_deferred()
 	_next_cam = cam_every if cam_every > 0.0 else INF
+
+
+func _probe_terrain() -> void:
+	var race := _race()
+	var hf: Glacier.HF = Spaceport.last_hf
+	if race == null or hf == null:
+		return
+	var td := race.track
+	for s: float in [0.0, 30.0, 200.0, td.length - 100.0]:
+		var hit := TrackData.Hit.new()
+		td.frame_at(s, hit)
+		var line := "probe s=%5.0f track y=%5.1f |" % [s, hit.c.y]
+		for d: float in [-200.0, -100.0, -50.0, -25.0, 0.0, 25.0, 50.0, 100.0, 200.0]:
+			var p := hit.c + hit.B * d
+			line += " %+4.0f:%5.1f" % [d, hf.at(p.x, p.z)]
+		print(line, "   near ", Spaceport.last_near.query(hit.c.x, hit.c.z))
 
 
 func _race() -> Race:

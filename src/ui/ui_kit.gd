@@ -101,6 +101,16 @@ static func button(text: String, cb: Callable, min_w: float = 320.0) -> Button:
 	return b
 
 
+## Tighter vertical padding for dense lists (career events).
+static func compact(b: Button) -> Button:
+	for st: String in ["normal", "hover", "focus", "pressed", "disabled"]:
+		var sb := theme().get_stylebox(st, "Button").duplicate() as StyleBoxFlat
+		sb.content_margin_top = 4
+		sb.content_margin_bottom = 4
+		b.add_theme_stylebox_override(st, sb)
+	return b
+
+
 static func panel(min_size: Vector2 = Vector2.ZERO) -> PanelContainer:
 	var p := PanelContainer.new()
 	var sb := StyleBoxFlat.new()

@@ -14,6 +14,8 @@ static func build(track_id: String, td: TrackData, parent: Node3D) -> Node3D:
 			theme = "helix_bay"
 		"glacier_ring":
 			theme = "glacier"
+		"atacama_spaceport":
+			theme = "spaceport"
 	_environment(theme, root)
 	var tracknode := Node3D.new()
 	tracknode.name = "Track"
@@ -24,6 +26,8 @@ static func build(track_id: String, td: TrackData, parent: Node3D) -> Node3D:
 			HelixBay.build(td, root)
 		"glacier":
 			Glacier.build(td, root)
+		"spaceport":
+			Spaceport.build(td, root)
 		_:
 			_testbed(td, root)
 	return root

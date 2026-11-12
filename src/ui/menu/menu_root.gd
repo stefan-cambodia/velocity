@@ -414,8 +414,8 @@ func _career() -> void:
 	var first: Button = null
 	for t in Career.TIERS.size():
 		var tier: Dictionary = Career.TIERS[t]
-		var col := _col(56 + (t % 2) * 600, 86 + (t / 2) * 278, 570)
-		col.add_theme_constant_override("separation", 4)
+		var col := _col(56 + (t % 2) * 600, 84 + (t / 2) * 300, 570)
+		col.add_theme_constant_override("separation", 3)
 		var open_t := Career.tier_open(t, done)
 		var hdr := "%s   %d/%d" % [tier["name"], Career.completed_in(t, done), (tier["events"] as Array).size()]
 		if not open_t:
@@ -430,8 +430,9 @@ func _career() -> void:
 				var cfg := Career.race_cfg(_cfg, ev, cls, int(_cfg.get("difficulty", 1)))
 				cfg["career_event"] = ev["id"]
 				Game.start_race(cfg), 570)
-			b.custom_minimum_size = Vector2(570, 44)
-			b.add_theme_font_size_override("font_size", 19)
+			b.custom_minimum_size = Vector2(570, 36)
+			b.add_theme_font_size_override("font_size", 18)
+			UIKit.compact(b)
 			b.disabled = not open_t
 			if ok_e:
 				b.add_theme_color_override("font_color", UIKit.ACC)

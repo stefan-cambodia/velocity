@@ -6,7 +6,7 @@ static var _cache: Dictionary = {}
 
 
 static func ids() -> PackedStringArray:
-	return PackedStringArray(["helix_bay", "glacier_ring", "proving_ground"])
+	return PackedStringArray(["helix_bay", "glacier_ring", "atacama_spaceport", "proving_ground"])
 
 
 static func spec(id: String) -> Dictionary:
@@ -17,6 +17,8 @@ static func spec(id: String) -> Dictionary:
 			return _helix_bay()
 		"glacier_ring":
 			return _glacier_ring()
+		"atacama_spaceport":
+			return _atacama()
 	push_error("unknown track " + id)
 	return {}
 
@@ -37,11 +39,11 @@ static func _proving_ground() -> Dictionary:
 		"heading": 0.0,
 		"width": 28.0,
 		"segments": [
-			{"len": 850, "name": "Main straight", "tags": ["start"], "flex": true},
+			{"len": 850, "name": "Main straight", "tags": ["start", "recharge"], "flex": true},
 			{"len": 500, "turn": 90, "bank": 16, "name": "Sweeper"},
-			{"len": 250, "rise": 14, "name": "Climb"},
+			{"len": 250, "rise": 24, "name": "Climb"},
 			{"len": 170, "turn": 180, "bank": 10, "width": 26, "ease": 0.35, "name": "Hairpin"},
-			{"len": 250, "rise": -14, "name": "Descent"},
+			{"len": 250, "rise": -24, "name": "Descent"},
 			{"len": 220, "turn": -180, "bank": -12, "ease": 0.35, "name": "Switchback"},
 			{"len": 200, "turn": -45, "bank": -10, "name": "S left"},
 			{"len": 200, "turn": 45, "bank": 10, "name": "S right"},
@@ -157,5 +159,53 @@ static func _glacier_ring() -> Dictionary:
 			{"seg": 8, "at": 0.4, "d": -5.0, "kind": "weapon", "length": 8.0},
 			{"seg": 14, "at": 0.25, "d": 6.0, "kind": "weapon", "length": 8.0},
 			{"seg": 19, "at": 0.5, "d": 0.0, "kind": "weapon", "length": 8.0},
+		],
+	}
+
+
+## ATACAMA SPACEPORT: a high-desert launch complex in full daylight. Runway
+## start, a sweep over the white salt flats, a red-rock canyon climb, the drop
+## to the flame-trench jump, a banked loop around the rocket on its pad, the
+## interior of the vehicle assembly hall, and the long crawlerway home.
+## See docs/TRACK_ATACAMA_SPACEPORT.md.
+static func _atacama() -> Dictionary:
+	return {
+		"name": "Atacama Spaceport",
+		"start": Vector3(0, 8, 0),
+		"heading": 0.0,
+		"width": 32.0,
+		"segments": [
+			{"len": 450, "tags": ["start", "recharge"], "name": "Runway"},
+			{"len": 560, "turn": 120, "bank": 14, "name": "Salar Sweep"},
+			{"len": 250, "name": "Salt Flat Run"},
+			{"len": 260, "turn": -70, "rise": 10, "bank": -12, "width": 28, "name": "Canyon Entry"},
+			{"len": 240, "turn": 60, "rise": 8, "bank": 12, "width": 27, "name": "Canyon Esses"},
+			{"len": 240, "turn": -60, "rise": 6, "bank": -12, "width": 27},
+			{"len": 200, "rise": 4, "width": 28, "name": "Mesa Crest"},
+			{"len": 220, "rise": -22, "width": 30, "name": "Canyon Drop"},
+			{"len": 100, "rise": 2.0, "exit_slope": 0.1},
+			{"len": 60, "rise": -6.0, "exit_slope": -0.12, "tags": ["gap"], "name": "Flame Trench Jump"},
+			{"len": 150, "rise": -4.0},
+			{"len": 1000, "turn": 200, "rise": 2.0, "bank": 18, "ease": 0.15, "name": "Launch Pad Loop"},
+			{"len": 380, "tags": ["tunnel"], "ceiling": 30.0, "width": 30, "name": "Assembly Hall"},
+			{"len": 160, "turn": 35, "bank": 8, "width": 28, "name": "Tracking Chicane"},
+			{"len": 160, "turn": -35, "bank": -8, "width": 28},
+			{"len": 320, "turn": -30, "bank": -8, "width": 30, "name": "Dish Bend"},
+			{"len": 600, "name": "Crawlerway", "flex": true},
+			{"len": 260, "turn": 15, "bank": 4, "name": "Crawler Kinks"},
+			{"len": 260, "turn": -15, "bank": -4},
+			{"len": 300},
+			{"len": 520, "turn": 140, "bank": 14, "name": "Final Turn"},
+			{"len": 200, "tags": ["start"], "name": "Grid Straight", "flex": true},
+		],
+		"pads": [
+			{"seg": 2, "at": 0.5, "d": 7.0, "kind": "boost"},
+			{"seg": 10, "at": 0.6, "d": 0.0, "kind": "boost"},
+			{"seg": 16, "at": 0.4, "d": -8.0, "kind": "boost"},
+			{"seg": 0, "at": 0.55, "d": -7.0, "kind": "weapon", "length": 8.0},
+			{"seg": 0, "at": 0.55, "d": 7.0, "kind": "weapon", "length": 8.0},
+			{"seg": 3, "at": 0.3, "d": 5.0, "kind": "weapon", "length": 8.0},
+			{"seg": 11, "at": 0.45, "d": -6.0, "kind": "weapon", "length": 8.0},
+			{"seg": 16, "at": 0.7, "d": 6.0, "kind": "weapon", "length": 8.0},
 		],
 	}

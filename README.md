@@ -27,14 +27,16 @@ The only third-party assets are the Orbitron and Rajdhani fonts (OFL, `assets/fo
 | Career and Championship | Done: 4 career tiers (13 events with objectives and rewards, tiers unlocked by completions) and 2 cups (3 and 4 rounds, mixed formats, points table, standings saved between rounds). Teams and classes unlock with credits. Verified headless: career events booked; a full 3-round cup completed |
 | Second circuit: **Glacier Ring** (Arctic research station, aurora, ice tunnel, 2.2 s jump) | Done: own world builder, 3-lap AI race verified, used in the career (17 events) and 3 cups. See `docs/TRACK_GLACIER_RING.md` |
 | Distinct ship per team | Done: parametric hull (nose, proportions, pod layout, fin style, aerofoil, canards, engine size); 8 different silhouettes (`godot --path . -s tools/preview.gd -- out.png --lineup`). All teams share the same collision size for fairness |
-| The other 10 circuits the brief asks for, team logos | **Not started** (phase 7 of the brief) |
+| Third circuit: **Atacama Spaceport** (daylight desert launch complex, flame-trench jump, assembly hall) | Done: own world builder, 3-lap AI race verified, in the career and a new Solar Cup. See `docs/TRACK_ATACAMA_SPACEPORT.md` |
+| Team logos | Done: original emblems in the menus and on gate boards |
+| The other 9 circuits the brief asks for | **Not started** (phase 7 of the brief) |
 
 ## Running
 
 ```sh
 godot --path .                                   # menus
 godot --path . -- --race=helix_bay [--laps=3]    # straight into a race
-godot --headless --path . -s tests/run_tests.gd  # unit tests (28)
+godot --headless --path . -s tests/run_tests.gd  # unit tests (29)
 tools/dev.sh check|test|bench|map <track>        # compile check, tests, handling bench, track map
 ```
 

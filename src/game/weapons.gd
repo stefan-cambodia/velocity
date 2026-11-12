@@ -27,11 +27,11 @@ const TABLES := [
 	{"plasma": 2, "missile": 3, "turbo": 3, "shockwave": 2, "emp": 2, "repair": 2},
 ]
 ## Tuning: damage (shield energy), speed loss (fraction), yaw kick (rad/s), stun (s).
-const PLASMA := {"speed": 160.0, "life": 2.2, "damage": 12.0, "loss": 0.12, "kick": 0.35, "stun": 0.0, "r_s": 3.5, "r_d": 2.2}
-const MISSILE := {"speed": 110.0, "accel": 60.0, "life": 4.5, "damage": 26.0, "loss": 0.3, "kick": 1.3, "stun": 0.6, "r_s": 4.0, "r_d": 2.6, "steer": 14.0, "range": 320.0}
-const SHOCK := {"speed": 120.0, "range": 230.0, "damage": 14.0, "loss": 0.35, "stun": 0.3}
-const EMP := {"radius": 36.0, "damage": 9.0, "stun": 1.1}
-const MINE := {"damage": 18.0, "loss": 0.25, "kick": 0.9, "life": 30.0, "r_s": 2.6, "r_d": 2.1}
+const PLASMA := {"speed": 160.0, "life": 2.2, "damage": 9.0, "loss": 0.12, "kick": 0.35, "stun": 0.0, "r_s": 3.5, "r_d": 2.2}
+const MISSILE := {"speed": 110.0, "accel": 60.0, "life": 4.5, "damage": 20.0, "loss": 0.3, "kick": 1.3, "stun": 0.6, "r_s": 4.0, "r_d": 2.6, "steer": 14.0, "range": 320.0}
+const SHOCK := {"speed": 120.0, "range": 230.0, "damage": 11.0, "loss": 0.35, "stun": 0.3}
+const EMP := {"radius": 36.0, "damage": 7.0, "stun": 1.1}
+const MINE := {"damage": 14.0, "loss": 0.25, "kick": 0.9, "life": 30.0, "r_s": 2.6, "r_d": 2.1}
 
 class Proj:
 	var kind: String = ""

@@ -27,18 +27,20 @@ class Near:
 		while i < td.count:
 			var p := td.pos[i]
 			var k := Vector2i(floori(p.x / cell), floori(p.z / cell))
-			if not map.has(k):
-				map[k] = PackedInt32Array()
-			(map[k] as PackedInt32Array).append(i)
+			# Packed arrays are values: append to a local copy and store it back.
+			var arr: PackedInt32Array = map.get(k, PackedInt32Array())
+			arr.append(i)
+			map[k] = arr
 			i += 3
 
-	## [horizontal distance, track height there, half width] of the nearest sample.
+	## [horizontal distance, track height there, half width, sample index] of the nearest sample.
 	func query(x: float, z: float) -> Array:
 		var cx := floori(x / cell)
 		var cz := floori(z / cell)
 		var best := INF
 		var by := 0.0
 		var bw := 15.0
+		var bi := -1
 		for dx in range(-1, 2):
 			for dz in range(-1, 2):
 				var k := Vector2i(cx + dx, cz + dz)
@@ -51,7 +53,8 @@ class Near:
 						best = dd
 						by = p.y
 						bw = maxf(td.half_l[i], td.half_r[i])
-		return [sqrt(best) if best < INF else 1e6, by, bw]
+						bi = i
+		return [sqrt(best) if best < INF else 1e6, by, bw, bi]
 
 
 static func build(td: TrackData, root: Node3D) -> void:
@@ -94,6 +97,61 @@ static func _environment(root: Node3D) -> void:
 	fill.light_color = Color(0.45, 0.8, 0.7)
 	fill.light_energy = 0.25
 	root.add_child(fill)
+
+
+## Nearest track sample and horizontal distance for every height-field node,
+## by a two-pass Euclidean propagation over the grid (8SSEDT style): nodes
+## near the track are seeded exactly, then each node takes the nearest sample
+## among its neighbours'. Returns [dist: PackedFloat32Array, idx: PackedInt32Array].
+static func distance_field(td: TrackData, hf: HF) -> Array:
+	var n := hf.nx * hf.nz
+	var dist := PackedFloat32Array()
+	var idx := PackedInt32Array()
+	dist.resize(n)
+	idx.resize(n)
+	dist.fill(1e9)
+	idx.fill(-1)
+	var i := 0
+	while i < td.count:
+		var p := td.pos[i]
+		var gx := int(round((p.x - hf.x0) / GRID))
+		var gz := int(round((p.z - hf.z0) / GRID))
+		for dz in range(-2, 3):
+			for dx in range(-2, 3):
+				var x := gx + dx
+				var z := gz + dz
+				if x < 0 or z < 0 or x >= hf.nx or z >= hf.nz:
+					continue
+				var k := z * hf.nx + x
+				var d := Vector2(hf.x0 + x * GRID - p.x, hf.z0 + z * GRID - p.z).length()
+				if d < dist[k]:
+					dist[k] = d
+					idx[k] = i
+		i += 2
+	var passes := [[[-1, 0], [0, -1], [-1, -1], [1, -1]], [[1, 0], [0, 1], [1, 1], [-1, 1]]]
+	for pass_i in 2:
+		var nbs: Array = passes[pass_i]
+		for zz in hf.nz:
+			var z := zz if pass_i == 0 else hf.nz - 1 - zz
+			for xx in hf.nx:
+				var x := xx if pass_i == 0 else hf.nx - 1 - xx
+				var k := z * hf.nx + x
+				var wx := hf.x0 + x * GRID
+				var wz := hf.z0 + z * GRID
+				for nb: Array in nbs:
+					var x2: int = x + int(nb[0])
+					var z2: int = z + int(nb[1])
+					if x2 < 0 or z2 < 0 or x2 >= hf.nx or z2 >= hf.nz:
+						continue
+					var j := idx[z2 * hf.nx + x2]
+					if j < 0 or j == idx[k]:
+						continue
+					var p := td.pos[j]
+					var d := Vector2(wx - p.x, wz - p.z).length()
+					if d < dist[k]:
+						dist[k] = d
+						idx[k] = j
+	return [dist, idx]
 
 
 ## Height field data, kept for placing objects on the ground.
@@ -139,12 +197,16 @@ static func _terrain(td: TrackData, root: Node3D, near: Near) -> HF:
 	low.seed = 3
 	low.frequency = 0.0016
 	var centre := (lo + hi) * 0.5
+	var field := distance_field(td, hf)
+	var fd: PackedFloat32Array = field[0]
+	var fi: PackedInt32Array = field[1]
 	for iz in hf.nz:
 		for ix in hf.nx:
 			var x := hf.x0 + ix * GRID
 			var z := hf.z0 + iz * GRID
-			var q: Array = near.query(x, z)
-			var d: float = q[0]
+			var j := fi[iz * hf.nx + ix]
+			var d: float = fd[iz * hf.nx + ix] if j >= 0 else 1e6
+			var q: Array = [d, td.pos[j].y if j >= 0 else 0.0, maxf(td.half_l[j], td.half_r[j]) if j >= 0 else 15.0, j]
 			# Broad undulation: the fjord ice shows wherever this dips below 0.
 			var base := 1.5 + 9.0 * (low.get_noise_2d(x, z) * 0.5 + 0.5)
 			# Mountains grow away from the circuit and towards the edge of the map.

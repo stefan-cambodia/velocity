@@ -10,7 +10,7 @@ Status: ✅ verified (with evidence), ⚠️ partly verified, ❌ not verified /
 | Handling consistent | ✅ | Determinism test; handling bench |
 | Airbrakes function independently | ✅ | `test_single_airbrake_yaws_and_is_symmetric`, `test_airbrake_tightens_a_full_lock_turn` |
 | Physics stable | ✅ | Hover settle, banked-oval and jump tests; step-size robustness |
-| No major track collision bugs | ⚠️ | Analytic floor and walls tested; minimum hull height in full races 0.95–0.99 m. Not yet checked: every section of every track by a human |
+| No major track collision bugs | ⚠️ | `test_library_circuits_are_well_formed`: every circuit closes and never runs into itself (it caught a 5 m Proving Ground crossing, now fixed); Analytic floor and walls tested; minimum hull height in full races 0.95–0.99 m on all 4 circuits. Not yet checked: every section of every track by a human |
 | Respawn works | ✅ | `test_respawn_returns_to_last_safe_point`; every ship gets a safety respawn when outside the track envelope (`Race._safety_respawn`); wedged or wrong-way AI recover |
 
 ## AI
