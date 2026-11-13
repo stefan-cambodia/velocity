@@ -8,6 +8,8 @@ uniform vec3 deep : source_color = vec3(0.01, 0.02, 0.04);
 uniform vec3 shallow : source_color = vec3(0.02, 0.06, 0.08);
 uniform vec3 reflect_col : source_color = vec3(0.6, 0.32, 0.4);
 uniform vec3 glints : source_color = vec3(1.0, 0.6, 0.3);
+uniform float ripple = 1.0;   // ripple frequency multiplier (1 = harbour scale)
+uniform float chop = 1.0;     // normal strength of the ripples
 
 varying vec3 wpos;
 
@@ -27,14 +29,14 @@ void vertex() {
 }
 
 void fragment() {
-	vec2 p = wpos.xz;
+	vec2 p = wpos.xz * ripple;
 	float t = TIME;
 	float h1 = vnoise(p * 0.06 + vec2(t * 0.05, t * 0.03));
 	float h2 = vnoise(p * 0.21 - vec2(t * 0.11, -t * 0.07));
 	float h3 = vnoise(p * 0.7 + vec2(t * 0.3, t * 0.21));
 	float hx = (vnoise(p * 0.21 + vec2(0.7, 0.0) - vec2(t * 0.11, -t * 0.07)) - h2);
 	float hz = (vnoise(p * 0.21 + vec2(0.0, 0.7) - vec2(t * 0.11, -t * 0.07)) - h2);
-	vec3 n = normalize(vec3(hx * 0.6 + (h1 - 0.5) * 0.1, 1.0, hz * 0.6 + (h3 - 0.5) * 0.1));
+	vec3 n = normalize(vec3((hx * 0.6 + (h1 - 0.5) * 0.1) * chop, 1.0, (hz * 0.6 + (h3 - 0.5) * 0.1) * chop));
 	NORMAL = normalize((VIEW_MATRIX * vec4(n, 0.0)).xyz);
 	float fres = pow(1.0 - clamp(dot(NORMAL, VIEW), 0.0, 1.0), 4.0);
 	ALBEDO = mix(deep, shallow, h1 * 0.5);

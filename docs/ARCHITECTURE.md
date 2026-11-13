@@ -160,7 +160,9 @@ acceleration pass. `AIDriver` produces the same `ShipControls` that a player doe
 look-ahead pursuit of the line, airbrakes when the yaw demand exceeds steering or the speed exceeds
 the profile, and thrust. An edge guard predicts the hull's lateral position 0.45 s ahead and steers
 off a barrier before contact. Pure pursuit toward a line that hugs the edge can otherwise overshoot
-it at steep crossing angles. Each personality sets line bias, braking margin, overtaking and blocking
+it at steep crossing angles. A slip guard eases the steering and keeps the inside airbrake out once
+the nose points more than 6° inside the direction of travel. Beyond that point, extra yaw only
+feeds a slide, because the keels can turn the velocity at a_lat / v at most. Each personality sets line bias, braking margin, overtaking and blocking
 behaviour, consistency, and weapon use. Difficulty scales the profile margin and the reaction noise.
 There is **no rubber-banding** and no hidden speed boosts.
 

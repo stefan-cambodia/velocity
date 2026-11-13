@@ -5,6 +5,15 @@ below and the stars all around. It follows Helix Bay (dusk city), Glacier Ring (
 Atacama Spaceport (desert day). Definition: `TrackLibrary._lagrange()`. World:
 `src/world/orbital.gd`. Map: `tools/dev.sh map lagrange_station /tmp/ls.png`.
 
+## Screenshots
+
+<table>
+<tr><td width="50%"><img src="images/lagrange_station-corkscrew.jpg" alt="The Corkscrew: the deck rolls a full turn above the clouds"><br><sub>The Corkscrew: the deck rolls a full turn above the clouds</sub></td><td width="50%"><img src="images/lagrange_station-corkscrew-side.jpg" alt="The Corkscrew from the side, ringed by hoops"><br><sub>The Corkscrew from the side, ringed by hoops</sub></td></tr>
+<tr><td width="50%"><img src="images/lagrange_station-hub-spiral.jpg" alt="Hub Spiral round the station core, the planet below"><br><sub>Hub Spiral round the station core, the planet below</sub></td><td width="50%"><img src="images/lagrange_station-station-core.jpg" alt="Approaching the station core"><br><sub>Approaching the station core</sub></td></tr>
+<tr><td width="50%"><img src="images/lagrange_station-habitat.jpg" alt="Habitat Ring: garden terraces inside the tube"><br><sub>Habitat Ring: garden terraces inside the tube</sub></td><td width="50%"><img src="images/lagrange_station-docking-bay.jpg" alt="Docking Bay: hangar with parked freighters"><br><sub>Docking Bay: hangar with parked freighters</sub></td></tr>
+<tr><td width="50%"><img src="images/lagrange_station-map.png" alt="Map (colour = height)"><br><sub>Map (colour = height)</sub></td></tr>
+</table>
+
 | Section | Character |
 |---------|-----------|
 | Concourse / Grid Straight | Start on the concourse: a recharge strip, weapon pads either side, the start gantry |

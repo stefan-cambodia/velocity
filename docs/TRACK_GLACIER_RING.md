@@ -4,6 +4,14 @@
 Definition: `TrackLibrary._glacier_ring()`. World: `src/world/glacier.gd`.
 Map: `tools/dev.sh map glacier_ring /tmp/gr.png`.
 
+## Screenshots
+
+<table>
+<tr><td width="50%"><img src="images/glacier_ring-aurora.jpg" alt="Aurora Sweep under the polar night sky"><br><sub>Aurora Sweep under the polar night sky</sub></td><td width="50%"><img src="images/glacier_ring-ice-tunnel.jpg" alt="Inside the Crevasse Tunnel"><br><sub>Inside the Crevasse Tunnel</sub></td></tr>
+<tr><td width="50%"><img src="images/glacier_ring-station.jpg" alt="The research station: radar beam, turbines, domes"><br><sub>The research station: radar beam, turbines, domes</sub></td><td width="50%"><img src="images/glacier_ring-station-view.jpg" alt="The station seen from the ice"><br><sub>The station seen from the ice</sub></td></tr>
+<tr><td width="50%"><img src="images/glacier_ring-switchbacks.jpg" alt="Glacier Switchbacks from above"><br><sub>Glacier Switchbacks from above</sub></td><td width="50%"><img src="images/glacier_ring-map.png" alt="Map (colour = height)"><br><sub>Map (colour = height)</sub></td></tr>
+</table>
+
 It is the counterpart to Helix Bay: Helix Bay is a dense night city with tight technical
 sections, while Glacier Ring is open, bright and fast, with long sweeps and a big jump.
 

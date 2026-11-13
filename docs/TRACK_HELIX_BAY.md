@@ -3,6 +3,14 @@
 6.5 km, clockwise, 9–60 m above the bay. Definition: `TrackLibrary._helix_bay()`. World:
 `src/world/helix_bay.gd`. Map: `tools/dev.sh map helix_bay /tmp/hb.png`.
 
+## Screenshots
+
+<table>
+<tr><td width="50%"><img src="images/helix_bay-seafront.jpg" alt="Seafront: the pack runs along the bay into the city at dusk"><br><sub>Seafront: the pack runs along the bay into the city at dusk</sub></td><td width="50%"><img src="images/helix_bay-helix-climb.jpg" alt="The Helix: climbing round the Spire"><br><sub>The Helix: climbing round the Spire</sub></td></tr>
+<tr><td width="50%"><img src="images/helix_bay-aerial.jpg" alt="From above: the Helix ramp wound round the Spire"><br><sub>From above: the Helix ramp wound round the Spire</sub></td><td width="50%"><img src="images/helix_bay-bay.jpg" alt="The Grand Straight beside the bay, arcologies to the right"><br><sub>The Grand Straight beside the bay, arcologies to the right</sub></td></tr>
+<tr><td width="50%"><img src="images/helix_bay-tunnel-exit.jpg" alt="Leaving the Harbour Tunnel"><br><sub>Leaving the Harbour Tunnel</sub></td><td width="50%"><img src="images/helix_bay-map.png" alt="Map (colour = height)"><br><sub>Map (colour = height)</sub></td></tr>
+</table>
+
 | # | Section | Length | Character | Design intent |
 |---|---------|--------|-----------|---------------|
 | 1 | Grand Straight | 760 m | Start/finish along the western sea wall, between twin arcologies; the last 320 m are the **recharge strip** (+4.5 shield/s, green chevrons); a pair of weapon pads | Launch, gantry with live start lights, shield recovery once per lap |

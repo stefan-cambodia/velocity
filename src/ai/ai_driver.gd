@@ -100,10 +100,18 @@ func drive(dt: float) -> void:
 		brake = clampf((spd - v_t - 1.5) / 6.0, 0.0, 1.0)
 	elif spd > v_t:
 		thrust = 0.4
+	# --- Slip guard: once the nose points well inside the direction of travel,
+	# more yaw only feeds a slide (the grip turns the velocity at a_lat / v at
+	# most). Ease the steering, keep the inside airbrake out, lift a little.
+	var over := -rad_to_deg(ph.slip) * signf(steer)
+	var slide := clampf((over - 6.0) / 8.0, 0.0, 1.0)
+	if slide > 0.0:
+		steer = lerpf(steer, signf(steer) * 0.35, slide)
+		thrust = minf(thrust, 1.0 - 0.5 * slide)
 	# --- Airbrakes: the inside brake when steering saturates.
 	var ab_l := brake
 	var ab_r := brake
-	var sat := absf(steer) - 0.92
+	var sat := absf(steer) - 0.92 if slide <= 0.0 else -1.0
 	if sat > 0.0 and spd > 30.0:
 		var amount := clampf(sat * 4.0, 0.0, 1.0) * float(style["ab_skill"])
 		if steer > 0.0:

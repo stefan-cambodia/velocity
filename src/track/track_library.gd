@@ -6,7 +6,7 @@ static var _cache: Dictionary = {}
 
 
 static func ids() -> PackedStringArray:
-	return PackedStringArray(["helix_bay", "glacier_ring", "atacama_spaceport", "lagrange_station", "proving_ground"])
+	return PackedStringArray(["helix_bay", "glacier_ring", "atacama_spaceport", "lagrange_station", "serra_verde", "proving_ground"])
 
 
 static func spec(id: String) -> Dictionary:
@@ -21,6 +21,8 @@ static func spec(id: String) -> Dictionary:
 			return _atacama()
 		"lagrange_station":
 			return _lagrange()
+		"serra_verde":
+			return _serra_verde()
 	push_error("unknown track " + id)
 	return {}
 
@@ -252,3 +254,51 @@ static func _lagrange() -> Dictionary:
 			{"seg": 13, "at": 0.6, "d": 6.0, "kind": "weapon", "length": 8.0},
 		],
 	}
+
+
+## SERRA VERDE: a rainforest gorge below a hydroelectric dam, in morning rain.
+## A figure-eight: the start is on the dam crest, the lap drops into the gorge
+## and runs along the river, leaves through a grotto behind a waterfall and
+## jumps the plunge pool, climbs through the canopy, and crosses back over the
+## River Run on the Sky Bridge, a long viaduct about 40 m above it.
+## See docs/TRACK_SERRA_VERDE.md.
+static func _serra_verde() -> Dictionary:
+	return {
+		"name": "Serra Verde",
+		"start": Vector3(0, 60, 0),
+		"heading": 0.0,
+		"width": 30.0,
+		"segments": [
+			{"len": 420, "tags": ["start", "recharge"], "name": "Dam Crest"},
+			{"len": 320, "turn": 90, "rise": -12, "bank": 12, "name": "Spillway Bend"},
+			{"len": 200, "rise": -6, "name": "Rim Run"},
+			{"len": 540, "turn": 90, "rise": -22, "bank": 13, "name": "Cascade Descent"},
+			{"len": 220, "turn": -35, "rise": -4, "bank": -10, "width": 28, "name": "Gorge Esses"},
+			{"len": 220, "turn": 35, "rise": -4, "bank": 10, "width": 28},
+			{"len": 700, "rise": -2, "name": "River Run", "flex": true},
+			{"len": 200, "turn": 12, "bank": 4, "name": "River Bends"},
+			{"len": 200, "turn": -12, "bank": -4},
+			{"len": 340, "turn": -90, "rise": 6, "bank": -10, "tags": ["tunnel"], "ceiling": 12.0, "width": 26, "name": "Falls Grotto"},
+			{"len": 100, "rise": 2.0, "exit_slope": 0.1, "name": "Falls Jump"},
+			{"len": 60, "rise": -6.0, "exit_slope": -0.12, "tags": ["gap"]},
+			{"len": 150, "rise": -4.0},
+			{"len": 420, "turn": -90, "rise": 16, "bank": -12, "name": "Canopy Climb"},
+			{"len": 220, "turn": 45, "rise": 8, "bank": 10, "width": 28, "name": "Canopy Esses"},
+			{"len": 220, "turn": -45, "rise": 8, "bank": -10, "width": 28},
+			{"len": 360, "turn": -90, "rise": 8, "bank": -12, "name": "Ridge Turn"},
+			{"len": 900, "rise": 4, "width": 26, "name": "Sky Bridge", "flex": true},
+			{"len": 420, "turn": 90, "rise": 8, "bank": 12, "width": 30, "name": "Reservoir Turn"},
+			{"len": 250, "tags": ["start"], "name": "Grid Straight"},
+		],
+		"pads": [
+			{"seg": 2, "at": 0.5, "d": -6.0, "kind": "boost"},
+			{"seg": 6, "at": 0.35, "d": 6.0, "kind": "boost"},
+			{"seg": 17, "at": 0.3, "d": 0.0, "kind": "boost"},
+			{"seg": 0, "at": 0.55, "d": -7.0, "kind": "weapon", "length": 8.0},
+			{"seg": 0, "at": 0.55, "d": 7.0, "kind": "weapon", "length": 8.0},
+			{"seg": 3, "at": 0.4, "d": 5.0, "kind": "weapon", "length": 8.0},
+			{"seg": 13, "at": 0.5, "d": -5.0, "kind": "weapon", "length": 8.0},
+			{"seg": 17, "at": 0.7, "d": -6.0, "kind": "weapon", "length": 8.0},
+		],
+	}
+

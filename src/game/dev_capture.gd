@@ -2,6 +2,10 @@
 ## telemetry printouts, camera cycling, result line, quit.
 ##   -- --race=<id> [--autopilot] [--shots=/abs/prefix] [--every=4] [--quit-at=60]
 ##      [--cam-every=0] [--telemetry] [--quit-on-end] [--shot-at=t1,t2,...]
+##      [--views=s,d,h,look_s,look_d;...]  fixed scenery cameras placed in the
+##      track frame (lap distance, lateral offset, height above the deck), one
+##      shot each into --shots, then quit
+##      [--no-hud]  hide the HUD (clean screenshots for the documentation)
 class_name DevCapture
 extends Node
 
@@ -28,6 +32,9 @@ var _demo_items := ["plasma", "missile", "shockwave", "mines", "emp", "shield", 
 var _demo_i: int = 0
 var _demo_next: float = 8.0
 var _demo_shot: float = -1.0
+var _views: Array[PackedFloat32Array] = []
+var _view_cam: Camera3D = null
+var _view_wait: int = 0
 
 
 func _ready() -> void:
@@ -43,6 +50,13 @@ func _ready() -> void:
 		elif a.begins_with("--csv="):
 			_csv = FileAccess.open(a.substr(6), FileAccess.WRITE)
 			_csv.store_line("t,s,d,h,speed,v_fwd,v_lat,slip_deg,yaw_rate,accel_long,accel_lat,steer,thrust,ab_l,ab_r,locked,align_deg,wall,energy,place")
+		elif a.begins_with("--views="):
+			for v in a.substr(8).split(";", false):
+				var f := PackedFloat32Array()
+				for x in v.split(","):
+					f.append(float(x))
+				if f.size() == 5:
+					_views.append(f)
 		elif a.begins_with("--shot-at="):
 			for v in a.substr(10).split(","):
 				shot_at.append(float(v))
@@ -81,6 +95,11 @@ func _shoot() -> void:
 func _process(delta: float) -> void:
 	_t += delta
 	var race := _race()
+	if race != null and race.hud != null and DevArgs.has("--no-hud"):
+		race.hud.set("visible", false)
+	if not _views.is_empty() and _t > 2.5 and race != null and race.track != null:
+		_step_views(race)
+		return
 	if prefix != "":
 		if _t >= _next_shot:
 			_next_shot += every
@@ -177,3 +196,32 @@ func _print_summary() -> void:
 	for r: Dictionary in s.results():
 		print("  %d. %-14s %-9s %s best %s %s" % [r["place"], r["name"], r["team"], (("~" if r.get("estimated", false) else "") + Hud.fmt_time(r["time"])) if r["finished"] else ("ELIM" if r["eliminated"] else "DNF"),
 			Hud.fmt_time(r["best_lap"]), "top %.0f km/h" % (float(r["top_speed"]) * 3.6 * ShipSpec.SPEED_SCALE)])
+
+
+## Fixed scenery cameras (--views): place, let three frames settle, shoot, next.
+func _step_views(race: Race) -> void:
+	if _view_cam == null:
+		_view_cam = Camera3D.new()
+		_view_cam.fov = 70.0
+		_view_cam.far = 9000.0
+		race.add_child(_view_cam)
+		_view_cam.current = true
+		_view_wait = 0
+	var v := _views[0]
+	var td := race.track
+	var a := TrackData.Hit.new()
+	var b := TrackData.Hit.new()
+	td.frame_at(v[0], a)
+	td.frame_at(v[3], b)
+	var eye := a.c + a.B * v[1] + Vector3.UP * v[2]
+	var at := b.c + b.B * v[4]
+	_view_cam.look_at_from_position(eye, at, Vector3.UP)
+	_view_wait += 1
+	if _view_wait < 4:
+		return
+	_shoot()
+	_views.remove_at(0)
+	_view_wait = 0
+	if _views.is_empty():
+		get_tree().quit()
+

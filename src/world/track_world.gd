@@ -18,7 +18,11 @@ static func build(track_id: String, td: TrackData, parent: Node3D) -> Node3D:
 			theme = "spaceport"
 		"lagrange_station":
 			theme = "orbital"
+		"serra_verde":
+			theme = "rainforest"
 	_environment(theme, root)
+	# The track material is shared between races; themes that want rain set it again.
+	(Mats.get_mat("track") as ShaderMaterial).set_shader_parameter("wetness", 0.0)
 	var tracknode := Node3D.new()
 	tracknode.name = "Track"
 	root.add_child(tracknode)
@@ -32,6 +36,8 @@ static func build(track_id: String, td: TrackData, parent: Node3D) -> Node3D:
 			Spaceport.build(td, root)
 		"orbital":
 			Orbital.build(td, root)
+		"rainforest":
+			Rainforest.build(td, root)
 		_:
 			_testbed(td, root)
 	return root

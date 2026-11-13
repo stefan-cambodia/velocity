@@ -58,6 +58,7 @@ same everywhere, so the racing surface always reads the same way.
 | Glacier Ring | Arctic research station | Polar night, aurora, snowfall | Ice tunnel, crevasse jump |
 | Atacama Spaceport | High-desert launch complex | Full daylight, hard shadows | Rocket and tower, flame-trench jump, assembly hall |
 | Lagrange Station | Racing station in low orbit | Hard white sun, black sky, blue planet-shine from below, no fog | The planet filling the lower view, the 360° Corkscrew, the spiral round the station core, habitat gardens |
+| Serra Verde | Rainforest gorge below a dam | Overcast morning, soft warm sun, rain, valley mist, wet glossy track | The dam crest start, the cable-stayed Sky Bridge over the River Run, the grotto's water curtain, the Veil |
 
 In orbit the "lived-in world with depth" pillar comes from the planet (clouds, coasts, night-side
 cities), the moon, the wheel habitat and the station's own structure. Exposed trusses, solar wings

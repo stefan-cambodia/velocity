@@ -5,6 +5,14 @@ circuit, against Helix Bay's dusk city and Glacier Ring's polar night.
 Definition: `TrackLibrary._atacama()`. World: `src/world/spaceport.gd`.
 Map: `tools/dev.sh map atacama_spaceport /tmp/sp.png`.
 
+## Screenshots
+
+<table>
+<tr><td width="50%"><img src="images/atacama_spaceport-grid.jpg" alt="The grid on the runway"><br><sub>The grid on the runway</sub></td><td width="50%"><img src="images/atacama_spaceport-canyon.jpg" alt="Canyon Esses, the rocket on the horizon"><br><sub>Canyon Esses, the rocket on the horizon</sub></td></tr>
+<tr><td width="50%"><img src="images/atacama_spaceport-launch-pad.jpg" alt="Launch Pad Loop round the rocket and its tower"><br><sub>Launch Pad Loop round the rocket and its tower</sub></td><td width="50%"><img src="images/atacama_spaceport-flame-trench.jpg" alt="Flame Trench Jump: the gap over the trench"><br><sub>Flame Trench Jump: the gap over the trench</sub></td></tr>
+<tr><td width="50%"><img src="images/atacama_spaceport-assembly-hall.jpg" alt="Through the Assembly Hall"><br><sub>Through the Assembly Hall</sub></td><td width="50%"><img src="images/atacama_spaceport-map.png" alt="Map (colour = height)"><br><sub>Map (colour = height)</sub></td></tr>
+</table>
+
 | Section | Character |
 |---------|-----------|
 | Runway / Grid Straight | Start on the runway (recharge strip, edge lights, control tower and hangars to the west) |

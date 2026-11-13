@@ -16,6 +16,7 @@ uniform float edge_energy = 2.4;
 uniform float rhythm_energy = 1.8;
 uniform float rhythm_spacing = 24.0;
 uniform vec3 recharge_color : source_color = vec3(0.25, 1.0, 0.55);
+uniform float wetness = 0.0;   // rain: darker deck, glossy puddles reflecting the sky
 
 varying vec2 edge_dist;
 
@@ -47,10 +48,19 @@ void fragment() {
 	vec3 alb = t.rgb * tint * COLOR.rgb;
 	alb = mix(alb, line_color * 0.75, lane * 0.85 + dash * 0.45);
 	alb = mix(alb, vec3(0.02), strip * 0.6);
+	float rough = mix(clamp(t.a + 0.25, 0.0, 1.0), 0.5, lane);
+	float spec = 0.35;
+	if (wetness > 0.0) {
+		// Puddle shapes from the same texture at a coarser scale (one extra fetch).
+		float puddle = smoothstep(0.45, 0.62, texture(albedo_tex, uv * 0.17 + 0.31).a);
+		alb *= mix(1.0, 0.55, wetness);
+		rough = mix(rough, mix(0.3, 0.05, puddle), wetness);
+		spec = mix(spec, 0.65, wetness);
+	}
 	ALBEDO = alb;
-	ROUGHNESS = mix(clamp(t.a + 0.25, 0.0, 1.0), 0.5, lane);
+	ROUGHNESS = rough;
 	METALLIC = 0.05;
-	SPECULAR = 0.35;
+	SPECULAR = spec;
 	NORMAL_MAP = texture(normal_tex, uv).rgb;
 	NORMAL_MAP_DEPTH = 0.6;
 	// Recharge strip (vertex alpha 0): soft green chevrons flowing along the track.

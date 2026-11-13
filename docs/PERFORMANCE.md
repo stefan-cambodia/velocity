@@ -93,6 +93,16 @@ now import with mipmaps. Helix Bay, the heaviest circuit, re-measured on the sam
 Battery 36.4 °C after three back-to-back runs (about 10 minutes of racing). This is still not a
 thermal soak test.
 
+### Serra Verde (same phone): not measured yet
+
+The first device run was interrupted 3 s into the countdown: the system log shows the Recents
+view opening and the game going to the background. A retry found another app in the foreground,
+so the phone was not used again. From that start alone: 17,600 trees on High, world build 1.8 s,
+ready to race 19.1 s on the first run after install (shader compilation), 258k primitives and 193
+draws on the grid, 55–60 fps once warm. This is the heaviest circuit by primitive count (Lagrange
+has about 150k), so a full 2-lap measurement must come before any performance claim. Tree count
+(`city` preset factor) and visibility range are the levers.
+
 Not measured yet: 90/120 Hz caps, Low/Medium/Ultra presets on device, a
 sustained thermal run (5+ races), battery drain rate, memory footprint, other devices and aspect ratios.
 

@@ -161,6 +161,18 @@ func _set_ship(team_id: String) -> void:
 
 # ------------------------------------------------------------------ screens
 
+## A vertical scroll area for lists that outgrow the screen (touch drag, wheel,
+## and focus-following for gamepad and keyboard).
+func _scroll(pos: Vector2, size: Vector2) -> ScrollContainer:
+	var sc := ScrollContainer.new()
+	sc.position = pos
+	sc.size = size
+	sc.follow_focus = true
+	sc.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	screen.add_child(sc)
+	return sc
+
+
 func _col(x: float, y: float, w: float) -> VBoxContainer:
 	var box := VBoxContainer.new()
 	box.position = Vector2(x, y)
@@ -412,10 +424,24 @@ func _career() -> void:
 	cr.position = Vector2(1000, 36)
 	screen.add_child(cr)
 	var first: Button = null
+	# Two columns of series inside one scroll area: the list grows with every
+	# circuit, and the focused event is kept in view (follow_focus).
+	var scroll := _scroll(Vector2(56, 80), Vector2(1170, 552))
+	var cols := HBoxContainer.new()
+	cols.add_theme_constant_override("separation", 30)
+	scroll.add_child(cols)
+	var sides: Array[VBoxContainer] = []
+	for k in 2:
+		var side := VBoxContainer.new()
+		side.custom_minimum_size = Vector2(570, 0)
+		side.add_theme_constant_override("separation", 18)
+		cols.add_child(side)
+		sides.append(side)
 	for t in Career.TIERS.size():
 		var tier: Dictionary = Career.TIERS[t]
-		var col := _col(56 + (t % 2) * 600, 84 + (t / 2) * 300, 570)
+		var col := VBoxContainer.new()
 		col.add_theme_constant_override("separation", 3)
+		sides[t % 2].add_child(col)
 		var open_t := Career.tier_open(t, done)
 		var hdr := "%s   %d/%d" % [tier["name"], Career.completed_in(t, done), (tier["events"] as Array).size()]
 		if not open_t:
@@ -459,7 +485,11 @@ func _cups() -> void:
 	var head := UIKit.title("CHAMPIONSHIP", 40)
 	head.position = Vector2(56, 24)
 	screen.add_child(head)
-	var box := _col(56, 100, 640)
+	var scroll := _scroll(Vector2(56, 96), Vector2(660, 536))
+	var box := VBoxContainer.new()
+	box.custom_minimum_size = Vector2(640, 0)
+	box.add_theme_constant_override("separation", 10)
+	scroll.add_child(box)
 	var running: Dictionary = SaveData.d["cup"]
 	var first: Button = null
 	if not running.is_empty():

@@ -94,6 +94,10 @@ than speed itself.
   Result: at most 1 m of drift at 88 m/s and no heading error after the roll
   (`test_corkscrew_keeps_an_off_centre_line_hands_off`). On ordinary bank changes the effect is
   negligible: the four existing circuits keep their lap times and wall counts.
+- **AI slip guard** (Serra Verde's Cascade Descent). Full steering plus the inside airbrake asks for
+  about 1.7× the yaw the keels can turn the velocity through, so a late turn-in became a 30° slide.
+  The AI now eases the steering once the nose is more than 6° inside the direction of travel. Peak
+  slip there fell to 11.8°; Proving Ground AI laps changed by under 0.1 s.
 - **Surface alignment** uses normalised interpolation instead of `slerp`. Float32 `slerp` between
   nearly parallel normals raised engine errors 852 times in the jump test.
 
