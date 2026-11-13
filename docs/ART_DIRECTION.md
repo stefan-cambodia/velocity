@@ -58,6 +58,11 @@ same everywhere, so the racing surface always reads the same way.
 | Glacier Ring | Arctic research station | Polar night, aurora, snowfall | Ice tunnel, crevasse jump |
 | Atacama Spaceport | High-desert launch complex | Full daylight, hard shadows | Rocket and tower, flame-trench jump, assembly hall |
 | Lagrange Station | Racing station in low orbit | Hard white sun, black sky, blue planet-shine from below, no fog | The planet filling the lower view, the 360° Corkscrew, the spiral round the station core, habitat gardens |
+| Forge Caldera | Volcanic foundry island | Night, ash clouds lit orange from below, lava as the main light | The lava lake and Lava Bridge, Foundry Hall's crucibles, steam vents |
+| Costa Branca | White Mediterranean town | Bright summer afternoon, deep blue sky, turquoise sea | The town climb, the church dome, the sea arch, the lighthouse headland |
+| Cirrus Heights | Sky port above the clouds | Sunrise: pastel pink and gold, long shadows, cloud sea below | The Spire Spiral, moored airships, the cloud bank dive |
+| Tempest Shoals | Offshore platforms | Night storm: blue-grey, sodium deck lights, lightning, rain | The swell under the causeway, the Gasholder Spiral, the Flare Jump |
+| Thalassa Deep | Undersea research city | Blue-green water column, light shafts, bioluminescence | Glass tubes over kelp and reef, the blue hole tower, the trench spiral |
 | Serra Verde | Rainforest gorge below a dam | Overcast morning, soft warm sun, rain, valley mist, wet glossy track | The dam crest start, the cable-stayed Sky Bridge over the River Run, the grotto's water curtain, the Veil |
 
 In orbit the "lived-in world with depth" pillar comes from the planet (clouds, coasts, night-side
@@ -102,3 +107,9 @@ thumbs stay clear.
 FOV widening with speed, world-anchored speed streaks, an edge-only radial blur with chromatic
 aberration, ship energy trails in team colour, a light sweep in tunnels, bloom on emissives, impact
 sparks and camera shake. The centre of the screen is always left untouched.
+
+## Open issues
+
+- Vertex colours: `StandardMaterial3D` treats them as linear unless `vertex_color_is_srgb` is set,
+  which makes vertex-tinted props paler than intended. Costa Branca sets it on its own materials;
+  the shared materials in `Mats` and the older worlds have not been reviewed for this yet.

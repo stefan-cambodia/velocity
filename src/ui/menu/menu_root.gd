@@ -22,6 +22,8 @@ var _ship_parts: ShipModel.Parts
 var _turntable: Node3D
 var _cam: Camera3D
 var _t: float = 0.0
+var _screen_name: String = ""
+var _quit_dialog: Control = null
 
 
 func _ready() -> void:
@@ -36,6 +38,8 @@ func _ready() -> void:
 	for a in DevArgs.all():
 		if a.begins_with("--menu-shot="):
 			_shot(a.substr(12))
+		elif a == "--menu-quit":     # dev: open the quit confirmation (screenshots)
+			get_tree().create_timer(0.5).timeout.connect(_confirm_quit)
 
 
 func _shot(path: String) -> void:
@@ -46,6 +50,8 @@ func _shot(path: String) -> void:
 
 
 func open(name: String, args: Dictionary = {}) -> void:
+	_screen_name = name
+	_quit_dialog = null
 	if screen:
 		screen.queue_free()
 	screen = Control.new()
@@ -199,8 +205,8 @@ func _home() -> void:
 	box.add_child(UIKit.button("PRACTICE", _choose_mode.bind("practice"), 420))
 	box.add_child(UIKit.button("RECORDS", func() -> void: open("records"), 420))
 	box.add_child(UIKit.button("SETTINGS", func() -> void: open("settings"), 420))
-	if not OS.has_feature("mobile"):
-		box.add_child(UIKit.button("QUIT", func() -> void: get_tree().quit(), 420))
+	var quit := UIKit.button("QUIT", _confirm_quit, 420)
+	box.add_child(quit)
 	for b in box.get_children():
 		if b is Button:
 			(b as Button).custom_minimum_size = Vector2(420, 50)
@@ -211,6 +217,58 @@ func _home() -> void:
 	foot.position = Vector2(640, 676)
 	screen.add_child(foot)
 	first.grab_focus.call_deferred()
+
+
+## Asks before closing the game: on a phone a stray tap on QUIT (or the back
+## button) should not end the session. CANCEL has the focus, so a pad or
+## keyboard press defaults to staying.
+func _confirm_quit() -> void:
+	if _quit_dialog != null:
+		return
+	var dim := ColorRect.new()
+	dim.color = Color(0.0, 0.0, 0.0, 0.65)
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dim.mouse_filter = Control.MOUSE_FILTER_STOP
+	screen.add_child(dim)
+	_quit_dialog = dim
+	var p := UIKit.panel(Vector2(560, 0))
+	p.position = Vector2(360, 250)
+	dim.add_child(p)
+	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", 18)
+	p.add_child(v)
+	v.add_child(UIKit.label("QUIT VELOCITY?", 32))
+	v.add_child(UIKit.label("Progress and records are saved.", 20, UIKit.DIM, false))
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 16)
+	v.add_child(row)
+	var yes := UIKit.button("QUIT", func() -> void: get_tree().quit(), 260)
+	var no := UIKit.button("CANCEL", _close_quit_dialog, 260)
+	row.add_child(yes)
+	row.add_child(no)
+	no.grab_focus.call_deferred()
+
+
+func _close_quit_dialog() -> void:
+	if _quit_dialog != null:
+		_quit_dialog.queue_free()
+		_quit_dialog = null
+	if screen:
+		for c in screen.find_children("*", "Button", true, false):
+			if (c as Button).text == "QUIT":
+				(c as Button).grab_focus.call_deferred()
+				break
+
+
+func _notification(what: int) -> void:
+	# Android back button: on the home screen it asks to quit; elsewhere it goes home.
+	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
+		if _quit_dialog != null:
+			_close_quit_dialog()
+		elif _screen_name == "home" or _screen_name == "":
+			_confirm_quit()
+		else:
+			open("home")
 
 
 func _choose_mode(id: String) -> void:

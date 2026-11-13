@@ -93,15 +93,54 @@ now import with mipmaps. Helix Bay, the heaviest circuit, re-measured on the sam
 Battery 36.4 °C after three back-to-back runs (about 10 minutes of racing). This is still not a
 thermal soak test.
 
-### Serra Verde (same phone): not measured yet
+### Serra Verde (same phone, 2 laps, High), 2026-11-13
 
-The first device run was interrupted 3 s into the countdown: the system log shows the Recents
-view opening and the game going to the background. A retry found another app in the foreground,
-so the phone was not used again. From that start alone: 17,600 trees on High, world build 1.8 s,
-ready to race 19.1 s on the first run after install (shader compilation), 258k primitives and 193
-draws on the grid, 55–60 fps once warm. This is the heaviest circuit by primitive count (Lagrange
-has about 150k), so a full 2-lap measurement must come before any performance claim. Tree count
-(`city` preset factor) and visibility range are the levers.
+| Metric | Lap 1 | Lap 2 |
+|--------|-------|-------|
+| Mean fps (60 cap) | 59.9 | **60.0** |
+| Lowest 1 s sample | 55 (first sight of materials) | **57** |
+| Adaptive render scale | 0.90, briefly 0.84 | 0.90 |
+| Draw calls | median 187, max 255 | median 152, max 210 |
+| Primitives | median 444k, max 694k | median 430k, max 684k |
+
+This is the heaviest circuit by geometry: about 17,700 instanced trees on High, roughly 3× Lagrange's
+primitive count. The Xclipse 540 holds 60 fps anyway, so geometry is not the limit here. Pixel cost
+mattered more on the earlier circuits. World build 1.1 s (trees included); ready to race 11.5 s
+after installation (19 s on the first, interrupted attempt, which also compiled shaders). An
+earlier run was interrupted 3 s in by the phone's Recents view and is not counted.
+
+### Forge Caldera and Costa Branca (same phone, 2 laps, High), 2026-11-13
+
+| Metric | Forge Caldera | Costa Branca |
+|--------|---------------|--------------|
+| Mean fps, lap 1 / lap 2 | 60.0 / **60.0** | 60.0 / **60.0** |
+| Lowest 1 s sample, lap 1 / lap 2 | 59 / 58 | 59 / 60 |
+| Adaptive render scale | 0.90 throughout | 0.90 throughout |
+| Draw calls (median, max) | 195 / 173, max 257 | 171 / 140, max 214 |
+| Primitives (median, max) | 147k / 140k, max 205k | 181k / 174k, max 332k |
+| World build | 4.7 s | 2.5 s (terrain 0.8 s) |
+| Ready to race (first run after install) | 23.1 s | 10.4 s |
+
+Forge's world build is the slowest so far on the phone (1.1–1.3 s headless on the desktop): a
+candidate for optimisation, not a frame-rate problem.
+
+### Cirrus Heights, Tempest Shoals, Thalassa Deep: not measured on the phone yet
+
+The phone was in use, and the game was no longer installed on it. Desktop figures from the building
+agents, all at the Ultra preset on a loaded machine and so only indicative: primitive medians
+158–165k with peaks of 303–374k, and draw medians 107–169. Each agent traced the peaks mainly to the
+shared track mesh: from the top of a spiral or across open sea or sky, almost the whole lap is in
+view with nothing to occlude it (277k triangles of track on Tempest Shoals). Forge Caldera and
+Thalassa Deep set a visibility range on the track chunks from their own world files. Doing that in
+`TrackMesh` for every circuit is the obvious next lever.
+
+### Speed post pass and transparent effects (all circuits)
+
+The edge blur pass (`SpeedFX._post`) writes back a screen copy that holds only opaque geometry. It
+was sorted among transparent objects by distance, so near the world origin it drew last and erased
+rain, engine plumes, flames, lightning and glass wherever it writes. Tempest Shoals and Thalassa Deep
+found this independently. The pass now has `render_priority = RENDER_PRIORITY_MIN`, so it draws
+first among transparent objects and the effects land on top, unblurred.
 
 Not measured yet: 90/120 Hz caps, Low/Medium/Ultra presets on device, a
 sustained thermal run (5+ races), battery drain rate, memory footprint, other devices and aspect ratios.

@@ -36,7 +36,8 @@ Closure error 0.05 m; flex straights 639 m (River Run) and 1264 m (Sky Bridge).
 
 Measured (ARC, 3 laps, 7 AI, difficulties 1 and 2): player autopilot best lap 79.2–79.6 s, AI best
 laps 78.6–84.9 s, longest air 1.67 s, lowest hull height 0.98 m, peak slip 11.8–16°. Wall contacts
-above 4 m/s: 0 at difficulty 1 and 1 (4.1 m/s) at difficulty 2.
+above 4 m/s: 0 at difficulty 1 and 1 (4.1 m/s) at difficulty 2. Galaxy A56 (High): lap-2 mean
+60.0 fps, lowest 1 s sample 57, about 440k primitives (see `docs/PERFORMANCE.md`).
 
 ## Layout method
 

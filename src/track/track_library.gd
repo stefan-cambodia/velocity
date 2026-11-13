@@ -6,7 +6,7 @@ static var _cache: Dictionary = {}
 
 
 static func ids() -> PackedStringArray:
-	return PackedStringArray(["helix_bay", "glacier_ring", "atacama_spaceport", "lagrange_station", "serra_verde", "proving_ground"])
+	return PackedStringArray(["helix_bay", "glacier_ring", "atacama_spaceport", "lagrange_station", "serra_verde", "forge_caldera", "costa_branca", "cirrus_heights", "tempest_shoals", "thalassa_deep", "proving_ground"])
 
 
 static func spec(id: String) -> Dictionary:
@@ -23,6 +23,16 @@ static func spec(id: String) -> Dictionary:
 			return _lagrange()
 		"serra_verde":
 			return _serra_verde()
+		"forge_caldera":
+			return _forge_caldera()
+		"costa_branca":
+			return _costa_branca()
+		"cirrus_heights":
+			return _cirrus_heights()
+		"tempest_shoals":
+			return _tempest_shoals()
+		"thalassa_deep":
+			return _thalassa_deep()
 	push_error("unknown track " + id)
 	return {}
 
@@ -302,3 +312,242 @@ static func _serra_verde() -> Dictionary:
 		],
 	}
 
+
+## FORGE CALDERA: a volcanic island at night, with a foundry built into a live
+## caldera. Start on a causeway across a cooled lava field by the sea, climb
+## the flank through basalt cuttings, enter the caldera through a cutting in
+## the rim and run a U around the glowing lava lake on a ledge, crossing its
+## outflow on the Lava Bridge. Foundry Hall takes the track through the
+## smelter in the rim, and the descent jumps a lava channel on the way back
+## to the coast. See docs/TRACK_FORGE_CALDERA.md.
+static func _forge_caldera() -> Dictionary:
+	return {
+		"name": "Forge Caldera",
+		"start": Vector3(0, 10, 0),
+		"heading": 0.0,
+		"width": 30.0,
+		"segments": [
+			{"len": 250, "tags": ["start", "recharge"], "width": 32, "name": "Causeway"},
+			{"len": 480, "turn": 90, "rise": 4, "bank": 12, "width": 30, "name": "Breakwater Sweep"},
+			{"len": 760, "rise": 6, "name": "Lava Field Run", "flex": true},
+			{"len": 260, "turn": -40, "rise": 8, "bank": -10, "width": 28, "name": "Basalt Cuttings"},
+			{"len": 260, "turn": 40, "rise": 8, "bank": 10, "width": 28},
+			{"len": 480, "rise": 30, "width": 28, "name": "Ash Climb"},
+			{"len": 300, "rise": 6, "width": 28, "name": "Caldera Gate"},
+			{"len": 440, "turn": 90, "rise": -6, "bank": 14, "width": 30, "name": "Lava Lake Loop"},
+			{"len": 240, "rise": -2, "width": 28, "name": "Lava Bridge"},
+			{"len": 440, "turn": 90, "rise": -2, "bank": 14, "width": 30, "name": "Ledge Turn"},
+			{"len": 420, "rise": -6, "tags": ["tunnel"], "ceiling": 20.0, "width": 28, "name": "Foundry Hall"},
+			{"len": 300, "turn": -25, "rise": -8, "bank": -8, "width": 30, "name": "Slag Bend"},
+			{"len": 480, "rise": -16, "name": "Flank Descent"},
+			{"len": 100, "rise": 2.0, "exit_slope": 0.1, "name": "Channel Jump"},
+			{"len": 60, "rise": -6.0, "exit_slope": -0.12, "tags": ["gap"]},
+			{"len": 150, "rise": -4.0},
+			{"len": 320, "turn": 25, "rise": -10, "bank": 8, "name": "Steam Vents"},
+			{"len": 260, "rise": -4, "name": "Coast Run"},
+			{"len": 520, "turn": 90, "bank": 12, "width": 32, "name": "Harbour Turn"},
+			{"len": 200, "tags": ["start"], "name": "Quay", "flex": true},
+		],
+		"pads": [
+			{"seg": 2, "at": 0.45, "d": -6.0, "kind": "boost"},
+			{"seg": 8, "at": 0.3, "d": 0.0, "kind": "boost"},
+			{"seg": 17, "at": 0.5, "d": 6.0, "kind": "boost"},
+			{"seg": 0, "at": 0.5, "d": -7.0, "kind": "weapon", "length": 8.0},
+			{"seg": 0, "at": 0.5, "d": 7.0, "kind": "weapon", "length": 8.0},
+			{"seg": 5, "at": 0.4, "d": 5.0, "kind": "weapon", "length": 8.0},
+			{"seg": 10, "at": 0.5, "d": -5.0, "kind": "weapon", "length": 8.0},
+			{"seg": 12, "at": 0.4, "d": 6.0, "kind": "weapon", "length": 8.0},
+			{"seg": 17, "at": 0.3, "d": -6.0, "kind": "weapon", "length": 8.0},
+		],
+	}
+
+## COSTA BRANCA: a white Mediterranean town above a harbour, on a summer
+## afternoon. Start on the harbour front, climb through the town between house
+## walls, past the domed church and through the olive groves, tunnel through
+## the headland onto the cliff road high above the sea, cross the sea arch,
+## sweep round the lighthouse, jump the ravine and dive to the beach.
+## See docs/TRACK_COSTA_BRANCA.md.
+static func _costa_branca() -> Dictionary:
+	return {
+		"name": "Costa Branca",
+		"start": Vector3(0, 6, 0),
+		"heading": 90.0,
+		"width": 30.0,
+		"segments": [
+			{"len": 450, "tags": ["start", "recharge"], "name": "Harbour Front"},
+			{"len": 420, "turn": -110, "rise": 4, "bank": -14, "width": 27, "name": "Quay Bend"},
+			{"len": 185, "rise": 12, "width": 25, "name": "Rua Direita", "flex": true},
+			{"len": 200, "turn": 35, "bank": 8, "width": 25, "name": "Town Esses"},
+			{"len": 200, "turn": -35, "rise": 10, "bank": -8, "width": 25},
+			{"len": 120, "width": 25},
+			{"len": 200, "turn": -35, "rise": 10, "bank": -8, "width": 25},
+			{"len": 200, "turn": 35, "rise": 6, "bank": 8, "width": 26},
+			{"len": 300, "turn": -80, "rise": 2, "bank": -12, "width": 28, "name": "Church Square"},
+			{"len": 300, "rise": 6, "width": 30, "name": "Olive Grove"},
+			{"len": 300, "turn": -30, "rise": 4, "bank": -8},
+			{"len": 300, "turn": 30, "rise": 2, "bank": 8},
+			{"len": 420, "turn": -50, "rise": 4, "bank": -8, "tags": ["tunnel"], "ceiling": 12.0, "width": 26, "name": "Headland Tunnel"},
+			{"len": 200, "width": 28, "name": "Cliff Road"},
+			{"len": 260, "turn": 15, "rise": -2, "bank": 5},
+			{"len": 260, "turn": -15, "bank": -5},
+			{"len": 240, "width": 26, "name": "Arch Bridge"},
+			{"len": 100, "rise": -2, "width": 30},
+			{"len": 560, "turn": -150, "rise": -8, "bank": -16, "name": "Lighthouse Bend"},
+			{"len": 140, "name": "Ravine Run"},
+			{"len": 100, "rise": 2.0, "exit_slope": 0.1, "name": "Ravine Jump"},
+			{"len": 60, "rise": -6.0, "exit_slope": -0.12, "tags": ["gap"]},
+			{"len": 150, "rise": -4.0},
+			{"len": 360, "turn": 30, "rise": -22, "bank": 8, "name": "Cove Descent"},
+			{"len": 300, "rise": -18, "width": 32},
+			{"len": 440, "tags": ["start"], "name": "Beach Straight", "flex": true},
+		],
+		"pads": [
+			{"seg": 2, "at": 0.5, "d": 0.0, "kind": "boost"},
+			{"seg": 13, "at": 0.5, "d": 6.0, "kind": "boost"},
+			{"seg": 24, "at": 0.3, "d": -7.0, "kind": "boost"},
+			{"seg": 0, "at": 0.55, "d": -7.0, "kind": "weapon", "length": 8.0},
+			{"seg": 0, "at": 0.55, "d": 7.0, "kind": "weapon", "length": 8.0},
+			{"seg": 5, "at": 0.5, "d": 4.0, "kind": "weapon", "length": 8.0},
+			{"seg": 9, "at": 0.5, "d": -6.0, "kind": "weapon", "length": 8.0},
+			{"seg": 17, "at": 0.4, "d": 5.0, "kind": "weapon", "length": 8.0},
+			{"seg": 23, "at": 0.5, "d": -6.0, "kind": "weapon", "length": 8.0},
+		],
+	}
+
+
+## CIRRUS HEIGHTS: a sky port above a sea of clouds at sunrise. A
+## figure-eight: the start is on the terminal's platform deck, the Gantry
+## Viaduct runs east into the rising sun and over the Cloudbank Turn, the Spire
+## Spiral climbs one and a half turns round the tallest tower, the Skygap Jump
+## leaps between two towers, the Cloudfall dives into the cloud bank and the
+## lap climbs back out past the mooring masts and through the airship hangar.
+## See docs/TRACK_CIRRUS_HEIGHTS.md.
+static func _cirrus_heights() -> Dictionary:
+	return {
+		"name": "Cirrus Heights",
+		"start": Vector3(0, 92, 0),
+		"heading": 180.0,
+		"width": 32.0,
+		"segments": [
+			{"len": 200, "tags": ["start", "recharge"], "name": "Terminal Deck"},
+			{"len": 480, "turn": -90, "rise": -4, "bank": -14, "width": 30, "name": "Dawn Sweep"},
+			{"len": 1150, "rise": -4, "name": "Gantry Viaduct", "flex": true},
+			{"len": 200, "turn": -15, "bank": -6, "name": "Needle Esses"},
+			{"len": 200, "turn": 15, "bank": 6},
+			{"len": 60, "rise": -2, "width": 28},
+			{"len": 1340, "turn": 540, "rise": 40, "bank": 20, "ease": 0.12, "name": "Spire Spiral"},
+			{"len": 50, "width": 30},
+			{"len": 100, "rise": 2.0, "exit_slope": 0.1},
+			{"len": 60, "rise": -6.0, "exit_slope": -0.12, "tags": ["gap"], "name": "Skygap Jump"},
+			{"len": 150, "rise": -4.0},
+			{"len": 400, "rise": -36, "exit_slope": -0.08, "name": "Cloudfall"},
+			{"len": 500, "turn": 90, "rise": -36, "bank": 13, "name": "Cloudbank Turn"},
+			{"len": 530, "rise": 10, "name": "Cloud Bank", "flex": true},
+			{"len": 400, "turn": -90, "rise": 20, "bank": -12, "name": "Mooring Turn"},
+			{"len": 340, "tags": ["tunnel"], "ceiling": 26.0, "width": 28, "name": "Airship Hangar"},
+			{"len": 400, "turn": -90, "rise": 20, "bank": -12, "width": 30, "name": "Harbour Turn"},
+			{"len": 150, "width": 32, "tags": ["start"], "name": "Grid Straight"},
+		],
+		"pads": [
+			{"seg": 2, "at": 0.3, "d": -6.0, "kind": "boost"},
+			{"seg": 7, "at": 0.5, "d": 0.0, "kind": "boost"},
+			{"seg": 13, "at": 0.6, "d": 6.0, "kind": "boost"},
+			{"seg": 0, "at": 0.55, "d": -7.0, "kind": "weapon", "length": 8.0},
+			{"seg": 0, "at": 0.55, "d": 7.0, "kind": "weapon", "length": 8.0},
+			{"seg": 2, "at": 0.7, "d": 6.0, "kind": "weapon", "length": 8.0},
+			{"seg": 11, "at": 0.4, "d": -5.0, "kind": "weapon", "length": 8.0},
+			{"seg": 13, "at": 0.3, "d": -6.0, "kind": "weapon", "length": 8.0},
+		],
+	}
+
+
+## TEMPEST SHOALS: offshore energy platforms in a night storm at sea. Start on
+## the main platform, a long causeway low over the swell, a slalom through the
+## wind farm, the Machinery Hall tunnel, the Gasholder Spiral (450 degrees,
+## climbing 40 m and passing over its own entry), the Crown Descent to the
+## Flare Jump across open sea onto the helideck platform, and back past the
+## lighthouse shoal. See docs/TRACK_TEMPEST_SHOALS.md.
+static func _tempest_shoals() -> Dictionary:
+	return {
+		"name": "Tempest Shoals",
+		"start": Vector3(0, 30, 0),
+		"heading": 0.0,
+		"width": 30.0,
+		"segments": [
+			{"len": 380, "tags": ["start", "recharge"], "name": "Main Deck"},
+			{"len": 420, "turn": 90, "rise": -14, "bank": 12, "name": "Flare Bend"},
+			{"len": 675, "name": "Swell Causeway", "flex": true},
+			{"len": 220, "turn": -22, "bank": -6, "name": "Turbine Kinks"},
+			{"len": 220, "turn": 22, "bank": 6},
+			{"len": 460, "turn": 70, "rise": 12, "bank": 10, "name": "Riser Sweep"},
+			{"len": 400, "tags": ["tunnel"], "ceiling": 12.0, "width": 28, "name": "Machinery Hall"},
+			{"len": 120, "width": 28, "name": "Holder Approach"},
+			{"len": 1400, "turn": 450, "rise": 40, "bank": 18, "ease": 0.15, "width": 28, "name": "Gasholder Spiral"},
+			{"len": 400, "rise": -20, "width": 30, "name": "Crown Descent"},
+			{"len": 100, "rise": 2.0, "exit_slope": 0.1, "name": "Flare Jump"},
+			{"len": 60, "rise": -6.0, "exit_slope": -0.12, "tags": ["gap"]},
+			{"len": 150, "rise": -4.0},
+			{"len": 220, "turn": -40, "rise": -2, "bank": -10, "width": 28, "name": "Helideck Esses"},
+			{"len": 220, "turn": 40, "rise": -2, "bank": 10},
+			{"len": 380, "turn": 70, "rise": -16, "bank": 12, "width": 30, "name": "Lighthouse Turn"},
+			{"len": 250, "rise": -4, "name": "Shoal Viaduct"},
+			{"len": 520, "turn": 40, "rise": 14, "bank": 6, "name": "Final Climb"},
+			{"len": 235, "tags": ["start"], "name": "Grid Straight", "flex": true},
+		],
+		"pads": [
+			{"seg": 2, "at": 0.45, "d": -6.0, "kind": "boost"},
+			{"seg": 12, "at": 0.6, "d": 0.0, "kind": "boost"},
+			{"seg": 16, "at": 0.5, "d": 6.0, "kind": "boost"},
+			{"seg": 0, "at": 0.55, "d": -7.0, "kind": "weapon", "length": 8.0},
+			{"seg": 0, "at": 0.55, "d": 7.0, "kind": "weapon", "length": 8.0},
+			{"seg": 3, "at": 0.5, "d": 5.0, "kind": "weapon", "length": 8.0},
+			{"seg": 9, "at": 0.3, "d": -5.0, "kind": "weapon", "length": 8.0},
+			{"seg": 13, "at": 0.5, "d": -4.0, "kind": "weapon", "length": 8.0},
+			{"seg": 17, "at": 0.6, "d": 6.0, "kind": "weapon", "length": 8.0},
+		],
+	}
+
+
+## THALASSA DEEP: an undersea research city on the edge of a continental shelf.
+## Start in the Atrium, a lit habitat hall; glass tubes across the kelp beds and
+## an open causeway through the reef; The Drop spirals 52 m down the wall of a
+## blue hole to the trench floor; the Abyss Run follows the trench past a wreck,
+## and the Ascent climbs back through the shelf in a rock tunnel to the
+## submarine pens. See docs/TRACK_THALASSA_DEEP.md.
+static func _thalassa_deep() -> Dictionary:
+	return {
+		"name": "Thalassa Deep",
+		"start": Vector3(0, 12, 0),
+		"heading": 0.0,
+		"width": 30.0,
+		"segments": [
+			{"len": 380, "tags": ["start", "recharge", "tunnel"], "ceiling": 22.0, "name": "Atrium"},
+			{"len": 450, "turn": 90, "bank": 12, "width": 26, "tags": ["tunnel"], "ceiling": 12.0, "name": "Ring Sweep"},
+			{"len": 330, "tags": ["tunnel"], "ceiling": 12.0, "name": "Kelp Run", "flex": true},
+			{"len": 230, "turn": -35, "bank": -10, "width": 28, "name": "Coral Esses"},
+			{"len": 230, "turn": 35, "bank": 10, "width": 28},
+			{"len": 200, "width": 26, "tags": ["tunnel"], "ceiling": 12.0, "name": "Shelf Edge"},
+			{"len": 1150, "turn": 360, "rise": -52, "bank": 18, "ease": 0.15, "tags": ["tunnel"], "ceiling": 12.0, "name": "The Drop"},
+			{"len": 450, "turn": 90, "rise": -4, "bank": 12, "tags": ["tunnel"], "ceiling": 12.0, "name": "Trench Turn"},
+			{"len": 300, "width": 28, "name": "Abyss Run"},
+			{"len": 240, "turn": 35, "bank": 10, "name": "Abyss Esses"},
+			{"len": 240, "turn": -35, "bank": -10},
+			{"len": 450, "turn": 90, "bank": 12, "width": 28, "name": "Wreck Bend"},
+			{"len": 700, "turn": -35, "rise": 28, "bank": -6, "width": 26, "tags": ["tunnel"], "ceiling": 10.0, "name": "The Ascent"},
+			{"len": 300, "turn": 35, "rise": 28, "bank": 8, "width": 26, "tags": ["tunnel"], "ceiling": 10.0},
+			{"len": 550, "turn": 90, "bank": 12, "width": 28, "name": "Dock Turn"},
+			{"len": 450, "width": 30, "name": "Return", "flex": true},
+			{"len": 200, "tags": ["start", "tunnel"], "ceiling": 22.0, "name": "Grid Straight"},
+		],
+		"pads": [
+			{"seg": 2, "at": 0.4, "d": 0.0, "kind": "boost"},
+			{"seg": 8, "at": 0.5, "d": -6.0, "kind": "boost"},
+			{"seg": 15, "at": 0.35, "d": 6.0, "kind": "boost"},
+			{"seg": 0, "at": 0.6, "d": -7.0, "kind": "weapon", "length": 8.0},
+			{"seg": 0, "at": 0.6, "d": 7.0, "kind": "weapon", "length": 8.0},
+			{"seg": 3, "at": 0.5, "d": 5.0, "kind": "weapon", "length": 8.0},
+			{"seg": 7, "at": 0.6, "d": -5.0, "kind": "weapon", "length": 8.0},
+			{"seg": 11, "at": 0.5, "d": 6.0, "kind": "weapon", "length": 8.0},
+			{"seg": 14, "at": 0.4, "d": -6.0, "kind": "weapon", "length": 8.0},
+		],
+	}

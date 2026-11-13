@@ -79,6 +79,10 @@ func _post() -> void:
 	qm.flip_faces = false
 	post.mesh = qm
 	post_mat = Mats.shader_mat("speed_post")
+	# Draw first among transparent objects: the pass writes back the screen
+	# copy taken after the opaque pass, so anything transparent drawn before
+	# it (rain, engine plumes, flames, lightning) would be erased.
+	post_mat.render_priority = Material.RENDER_PRIORITY_MIN
 	post.material_override = post_mat
 	post.extra_cull_margin = 16384.0
 	post.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF

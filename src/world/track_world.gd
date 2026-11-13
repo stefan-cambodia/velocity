@@ -20,6 +20,16 @@ static func build(track_id: String, td: TrackData, parent: Node3D) -> Node3D:
 			theme = "orbital"
 		"serra_verde":
 			theme = "rainforest"
+		"forge_caldera":
+			theme = "forge"
+		"costa_branca":
+			theme = "coastal"
+		"cirrus_heights":
+			theme = "skyport"
+		"tempest_shoals":
+			theme = "offshore"
+		"thalassa_deep":
+			theme = "abyssal"
 	_environment(theme, root)
 	# The track material is shared between races; themes that want rain set it again.
 	(Mats.get_mat("track") as ShaderMaterial).set_shader_parameter("wetness", 0.0)
@@ -38,6 +48,16 @@ static func build(track_id: String, td: TrackData, parent: Node3D) -> Node3D:
 			Orbital.build(td, root)
 		"rainforest":
 			Rainforest.build(td, root)
+		"forge":
+			Forge.build(td, root)
+		"coastal":
+			Coastal.build(td, root)
+		"skyport":
+			Skyport.build(td, root)
+		"offshore":
+			Offshore.build(td, root)
+		"abyssal":
+			Abyssal.build(td, root)
 		_:
 			_testbed(td, root)
 	return root

@@ -5,3 +5,6 @@
 __pycache__/
 *.keystore
 *.jks
+
+# Claude Code agent worktrees
+.claude/

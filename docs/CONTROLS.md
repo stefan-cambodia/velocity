@@ -21,6 +21,9 @@ motion sensor use **Tilt** and the others use **Touch buttons**.
 - Opacity and size are in Settings. Per-control positions can be stored under
   `Settings.layout["<scheme>/<id>"] = [x, y, radius]` in viewport fractions. **There is no in-game
   layout editor yet.**
+- Menus: QUIT on the home screen (all platforms) asks for confirmation; CANCEL has the focus. The
+  Android back button opens the same confirmation on the home screen, closes it if it is open, and
+  returns to the home screen from any other menu page.
 - Steering assist (Off / Low / High) adds the steering the track curvature needs while the player's
   own input is near zero, and nudges away from a barrier the ship is about to touch. It fades out as
   soon as the player steers.
