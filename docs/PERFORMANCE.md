@@ -124,15 +124,28 @@ earlier run was interrupted 3 s in by the phone's Recents view and is not counte
 Forge's world build is the slowest so far on the phone (1.1–1.3 s headless on the desktop): a
 candidate for optimisation, not a frame-rate problem.
 
-### Cirrus Heights, Tempest Shoals, Thalassa Deep: not measured on the phone yet
+### Cirrus Heights, Tempest Shoals, Thalassa Deep (same phone, 2 laps, High), 2026-11-13
 
-The phone was in use, and the game was no longer installed on it. Desktop figures from the building
-agents, all at the Ultra preset on a loaded machine and so only indicative: primitive medians
-158–165k with peaks of 303–374k, and draw medians 107–169. Each agent traced the peaks mainly to the
-shared track mesh: from the top of a spiral or across open sea or sky, almost the whole lap is in
-view with nothing to occlude it (277k triangles of track on Tempest Shoals). Forge Caldera and
-Thalassa Deep set a visibility range on the track chunks from their own world files. Doing that in
-`TrackMesh` for every circuit is the obvious next lever.
+| Metric | Cirrus Heights | Tempest Shoals | Thalassa Deep |
+|--------|----------------|----------------|---------------|
+| Mean fps, lap 1 / lap 2 | 59.7 / **59.9** | 59.6 / **60.0** | 59.9 / **60.0** |
+| Lowest 1 s sample, lap 1 / lap 2 | 48 / 55 | 50 / 60 | 57 / 58 |
+| Adaptive render scale | 0.90, briefly 0.83 on lap 1 | 0.90, briefly 0.84 on lap 1 | 0.90, briefly 0.84 on lap 1 |
+| Draw calls (median, max) | 174 / 156, max 280 | 141 / 130, max 197 | 165 / 150, max 262 |
+| Primitives (median, max) | 180k / 175k, max 380k | 177k / 179k, max 330k | 127k / 123k, max 253k |
+| World build | 1.4 s | 1.1 s | 2.3 s (terrain 0.8 s) |
+| Ready to race | 16.5 s (first run after install) | 9.1 s | 12.9 s |
+
+The lap-1 lows (48–57) fall in the first minute, the first time materials are drawn; on lap 2
+the lows are 55–60. The primitive peaks of 330–380k come mainly from the shared track mesh: from the
+top of a spiral, or across open sea or sky, almost the whole lap is in view with nothing to occlude
+it (277k triangles of track on Tempest Shoals). The Xclipse 540 holds 60 fps through them anyway.
+Forge Caldera and Thalassa Deep set a visibility range on the track chunks from their own world
+files. Doing that in `TrackMesh` for every circuit is the obvious next lever if a weaker phone needs
+it.
+
+Logcat note: another Godot project on the same phone also logs under the `godot` tag, so device runs
+now read the log filtered by the game's process id (`logcat --pid`).
 
 ### Speed post pass and transparent effects (all circuits)
 

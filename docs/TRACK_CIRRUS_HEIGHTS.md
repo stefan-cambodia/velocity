@@ -124,7 +124,8 @@ The peaks come from the track mesh itself. From the top of the spiral and the st
 almost the whole lap is in view and nothing in the open sky occludes it: with every world part
 skipped (`--skyport-skip=...`) those frames still reach 255–263k. World build 0.85–1.7 s windowed (3.3 s once while the machine was heavily loaded by other jobs),
 0.5 s headless. The cloud sea is three texture fetches per pixel, and the sky is a gradient and one
-fetch. Not measured yet on the phone.
+fetch. Galaxy A56 (High, 2 laps): 59.7 / 59.9 fps mean (lap 1 / lap 2), lowest 1 s sample 48 / 55,
+primitives median about 178k, max 380k; world build 1.4 s (see `docs/PERFORMANCE.md`).
 
 ## Development aids added
 

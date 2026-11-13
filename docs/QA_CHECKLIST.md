@@ -34,7 +34,7 @@ Status: ✅ verified (with evidence), ⚠️ partly verified, ❌ not verified /
 | Successful startup | ✅ | A56: menus, race, results. Emulator: engine starts but cannot present Vulkan frames |
 | Responsive controls | ❌ | Touch and tilt implemented; not yet tried by a person on the phone |
 | Correct screen scaling | ⚠️ | 2340×1080 (A56) and 1280×720 desktop. No other aspect ratios tested |
-| Stable frame pacing | ⚠️ | A56, High: lap-2 mean 60.0 fps on Helix Bay (low 59) and Lagrange Station (low 60), after the texture-mipmap fix and the baked planet; Glacier 59.9, Atacama 60.0, Serra Verde 60.0 (low 57, ~440k primitives), Forge Caldera 60.0 (low 58), Costa Branca 60.0 (low 60). Cirrus Heights, Tempest Shoals and Thalassa Deep are not measured on the device yet (see PERFORMANCE.md). Not tested: other devices, thermal soak, 90/120 Hz |
+| Stable frame pacing | ⚠️ | A56, High: lap-2 mean 60.0 fps on Helix Bay (low 59) and Lagrange Station (low 60), after the texture-mipmap fix and the baked planet; Glacier 59.9, Atacama 60.0, Serra Verde 60.0 (low 57, ~440k primitives), Forge Caldera 60.0 (low 58), Costa Branca 60.0 (low 60), Cirrus Heights 59.9 (low 55), Tempest Shoals 60.0 (low 60), Thalassa Deep 60.0 (low 58); all ten circuits measured (see PERFORMANCE.md). Not tested: other devices, thermal soak, 90/120 Hz |
 | No critical crashes | ✅ | None observed (one device session, many desktop runs) |
 
 ## Systems

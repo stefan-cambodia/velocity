@@ -150,7 +150,7 @@ plumes) should now show at speed with motion blur on.
   load from other processes). Trackside and platforms dominate. A lean local box and beam (no UVs:
   these materials are triplanar or plain) is about 2.5× faster than `MeshKit.beam`, and the world
   builds thousands of them.
-- Not yet measured on the phone.
+- Galaxy A56 (High, 2 laps): 59.6 / 60.0 fps mean (lap 1 / lap 2), lowest 1 s sample 50 / 60, primitives median about 178k, max 330k; world build 1.1 s, ready to race 9.1 s (see `docs/PERFORMANCE.md`).
 
 ## Development aids added
 

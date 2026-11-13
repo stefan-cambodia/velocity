@@ -111,8 +111,9 @@ back in two halves.
 Windowed lap on the desktop (Ultra preset, the desktop default; 5 AI, HUD on): draw calls median
 169, max 231; primitives median 161k, max 303k (the end of the Kelp Run and the Coral Esses, where
 the kelp forest, the reef and the whole of The Drop are in view at once). World build 2.1 s
-(seabed 0.75 s). Not measured on the phone yet; on High the view factor (1.0 instead of 1.3) and
-the prop density (1.0 instead of 1.25) are lower, so these numbers are an upper bound. The
+(seabed 0.75 s). Those are Ultra figures. Galaxy A56 (High, 2 laps): 59.9 / 60.0 fps mean (lap 1 / lap 2), lowest
+1 s sample 57 / 58, primitives median about 125k, max 253k; world build 2.3 s (see
+`docs/PERFORMANCE.md`). The
 biggest costs at the peak, measured with `--abyss-skip`, were the reef (about 100k primitives at
 first, 45–50k after the patches and a shorter draw distance) and the tubes (about 45k).
 
